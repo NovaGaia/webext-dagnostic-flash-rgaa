@@ -101,6 +101,11 @@ function simulateTests() {
   
   // Tests de la catégorie langage
   testContrasts();
+  testColorOnly();
+  testMediaAlternatives();
+  testLanguageDefined();
+  testExplicitLinks();
+  testTextResize();
   testAnimations();
   
   // Tests de la catégorie structuration

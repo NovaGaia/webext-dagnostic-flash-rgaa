@@ -271,6 +271,49 @@ function getDocumentationContent(testId) {
   <a href="https://www.numerique.gouv.fr/publications/rgaa-accessibilite/methode-rgaa/criteres/#criteres-6" target="_blank" rel="noopener" class="rgaa-badge">6.1<span class="external-link-icon" aria-label="Lien externe">↗</span></a>
   <a href="https://www.numerique.gouv.fr/publications/rgaa-accessibilite/methode-rgaa/criteres/#criteres-6" target="_blank" rel="noopener" class="rgaa-badge">6.2<span class="external-link-icon" aria-label="Lien externe">↗</span></a>
 </div>`
+    },
+    'color-only': {
+      howToCheck: `<p>Sur l'échantillon, vérifier que toutes les informations importantes sont accessibles sans faire appel à la seule couleur. Par exemple, si une erreur est indiquée uniquement par une couleur (rouge), il faut également un texte, une icône ou un symbole pour la signaler.</p>`,
+      why: `<p>Certains utilisateurs peuvent avoir des difficultés à percevoir les couleurs (daltonisme par exemple). Il est donc important que toutes les informations soient accessibles sans faire appel à la seule couleur.</p>`,
+      rgaaCriteria: `<div class="rgaa-criteria-list">
+  <a href="https://www.numerique.gouv.fr/publications/rgaa-accessibilite/methode-rgaa/criteres/#criteres-3" target="_blank" rel="noopener" class="rgaa-badge">3.1<span class="external-link-icon" aria-label="Lien externe">↗</span></a>
+</div>`
+    },
+    'media-alternatives': {
+      howToCheck: `<p>Sur l'échantillon, vérifier que :</p>
+<ul>
+  <li>Les images ont un attribut alt approprié (vide si l'image est décorative) ;</li>
+  <li>Les vidéos ont des sous-titres ou une transcription ;</li>
+  <li>Les fichiers audio ont une transcription ou une description.</li>
+</ul>`,
+      why: `<p>Les alternatives textuelles permettent aux utilisateurs de lecteurs d'écran et aux personnes qui ne peuvent pas percevoir les médias visuels ou auditifs d'accéder à l'information véhiculée par ces contenus.</p>`,
+      rgaaCriteria: `<div class="rgaa-criteria-list">
+  <a href="https://www.numerique.gouv.fr/publications/rgaa-accessibilite/methode-rgaa/criteres/#criteres-1" target="_blank" rel="noopener" class="rgaa-badge">1.1<span class="external-link-icon" aria-label="Lien externe">↗</span></a>
+  <a href="https://www.numerique.gouv.fr/publications/rgaa-accessibilite/methode-rgaa/criteres/#criteres-1" target="_blank" rel="noopener" class="rgaa-badge">1.2<span class="external-link-icon" aria-label="Lien externe">↗</span></a>
+  <a href="https://www.numerique.gouv.fr/publications/rgaa-accessibilite/methode-rgaa/criteres/#criteres-1" target="_blank" rel="noopener" class="rgaa-badge">1.3<span class="external-link-icon" aria-label="Lien externe">↗</span></a>
+</div>`
+    },
+    'language-defined': {
+      howToCheck: `<p>Sur l'échantillon, vérifier que l'attribut lang est présent sur l'élément html et correspond à la langue principale du site.</p>`,
+      why: `<p>La déclaration de la langue permet aux lecteurs d'écran de prononcer correctement le contenu. Elle améliore également la qualité du référencement.</p>`,
+      rgaaCriteria: `<div class="rgaa-criteria-list">
+  <a href="https://www.numerique.gouv.fr/publications/rgaa-accessibilite/methode-rgaa/criteres/#criteres-8" target="_blank" rel="noopener" class="rgaa-badge">8.1<span class="external-link-icon" aria-label="Lien externe">↗</span></a>
+  <a href="https://www.numerique.gouv.fr/publications/rgaa-accessibilite/methode-rgaa/criteres/#criteres-8" target="_blank" rel="noopener" class="rgaa-badge">8.2<span class="external-link-icon" aria-label="Lien externe">↗</span></a>
+</div>`
+    },
+    'explicit-links': {
+      howToCheck: `<p>Sur l'échantillon, vérifier que le libellé de chaque lien est explicite et permet de comprendre sa destination sans contexte (éviter les libellés comme "En savoir plus", "Cliquez ici", etc.).</p>`,
+      why: `<p>Les liens doivent être compréhensibles hors contexte, notamment pour les utilisateurs de lecteurs d'écran qui peuvent naviguer de lien en lien sans avoir accès au contexte environnant.</p>`,
+      rgaaCriteria: `<div class="rgaa-criteria-list">
+  <a href="https://www.numerique.gouv.fr/publications/rgaa-accessibilite/methode-rgaa/criteres/#criteres-3" target="_blank" rel="noopener" class="rgaa-badge">3.1<span class="external-link-icon" aria-label="Lien externe">↗</span></a>
+</div>`
+    },
+    'text-resize': {
+      howToCheck: `<p>Sur l'échantillon, augmenter la taille des caractères à 200% dans les paramètres du navigateur et vérifier que le contenu reste lisible et utilisable.</p>`,
+      why: `<p>Certains utilisateurs ont besoin d'augmenter la taille du texte pour mieux lire le contenu. Il est important que le site reste fonctionnel même avec un texte plus grand.</p>`,
+      rgaaCriteria: `<div class="rgaa-criteria-list">
+  <a href="https://www.numerique.gouv.fr/publications/rgaa-accessibilite/methode-rgaa/criteres/#criteres-10" target="_blank" rel="noopener" class="rgaa-badge">10.11<span class="external-link-icon" aria-label="Lien externe">↗</span></a>
+</div>`
     }
   };
   

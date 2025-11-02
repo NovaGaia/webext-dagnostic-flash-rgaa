@@ -82,6 +82,36 @@ const translations = {
     testContrastsReanalyze: 'Relancer l\'analyse',
     testContrastsNameForStats: 'Les contrastes sont suffisants',
     
+    // Test: Aucune information véhiculée uniquement par la couleur
+    testColorOnlyName: 'Aucune information n\'est véhiculée uniquement par la couleur',
+    testColorOnlyDesc: 'Vérification que toutes les informations importantes sont accessibles sans faire appel à la seule couleur',
+    testColorOnlyInfo: 'ℹ️ Test à valider manuellement. Pour savoir comment contrôler, consulter la documentation',
+    testColorOnlyNameForStats: 'Aucune information n\'est véhiculée uniquement par la couleur',
+    
+    // Test: Alternatives textuelles média
+    testMediaAlternativesName: 'Les images, les vidéos et les fichiers audio ont une alternative textuelle',
+    testMediaAlternativesDesc: 'Vérification que toutes les images, vidéos et fichiers audio ont une alternative textuelle appropriée',
+    testMediaAlternativesInfo: 'ℹ️ Test à valider manuellement. Pour savoir comment contrôler, consulter la documentation',
+    testMediaAlternativesNameForStats: 'Les images, les vidéos et les fichiers audio ont une alternative textuelle',
+    
+    // Test: Langue principale
+    testLanguageDefinedName: 'La langue principale du site est bien définie',
+    testLanguageDefinedDesc: 'Vérification que l\'attribut lang est présent sur l\'élément html et correspond à la langue principale',
+    testLanguageDefinedInfo: 'ℹ️ Test à valider manuellement. Pour savoir comment contrôler, consulter la documentation',
+    testLanguageDefinedNameForStats: 'La langue principale du site est bien définie',
+    
+    // Test: Liens explicites
+    testExplicitLinksName: 'Les liens sont explicites',
+    testExplicitLinksDesc: 'Vérification que le libellé de chaque lien est explicite et permet de comprendre sa destination sans contexte',
+    testExplicitLinksInfo: 'ℹ️ Test à valider manuellement. Pour savoir comment contrôler, consulter la documentation',
+    testExplicitLinksNameForStats: 'Les liens sont explicites',
+    
+    // Test: Redimensionnement texte
+    testTextResizeName: 'Le contenu reste lisible lorsque la taille de caractères est portée à 200% de la taille par défaut dans le navigateur',
+    testTextResizeDesc: 'Vérification que le contenu reste lisible et utilisable lorsque la taille des caractères est augmentée à 200%',
+    testTextResizeInfo: 'ℹ️ Test à valider manuellement. Pour savoir comment contrôler, consulter la documentation',
+    testTextResizeNameForStats: 'Le contenu reste lisible lorsque la taille de caractères est portée à 200% de la taille par défaut dans le navigateur',
+    
     // Test: Animations
     testAnimationsName: 'Les animations, clignotements et sons sont contrôlables',
     testAnimationsDesc: 'Vérification que les animations et sons peuvent être contrôlés par l\'utilisateur',
