@@ -287,6 +287,92 @@
       font-size: 13px;
     }
     
+    /* Bloc détection langue */
+    .language-detected {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #f5f5f5;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    
+    /* Popin modal */
+    .popin-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 10000;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .popin-overlay.active {
+      display: flex;
+    }
+    
+    .popin-modal {
+      background: white;
+      border-radius: 8px;
+      padding: 0;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      z-index: 10001;
+    }
+    
+    .popin-header {
+      padding: 20px 20px 15px 20px;
+      border-bottom: 1px solid #e0e0e0;
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .popin-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: #666;
+      cursor: pointer;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+    }
+    
+    .popin-close:hover {
+      background-color: #f0f0f0;
+      color: #333;
+    }
+    
+    .popin-body {
+      padding: 20px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #555;
+      white-space: pre-line;
+    }
+    
+    .popin-footer {
+      padding: 15px 20px;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: flex-end;
+    }
+    
     /* Documentation bloc */
     .test-documentation {
       margin-top: 15px;
@@ -727,6 +813,20 @@
         <div class="category-content" id="category-structuration">
           <div class="empty-state" data-i18n="emptyState">Aucun test effectué pour cette catégorie</div>
         </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Popin modal -->
+  <div class="popin-overlay" id="popin-overlay">
+    <div class="popin-modal">
+      <div class="popin-header">
+        <span id="popin-title">Instructions</span>
+        <button class="popin-close" id="popin-close" aria-label="Fermer">×</button>
+      </div>
+      <div class="popin-body" id="popin-body"></div>
+      <div class="popin-footer">
+        <button class="button-small" id="popin-ok">OK</button>
       </div>
     </div>
   </div>

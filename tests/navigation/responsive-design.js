@@ -178,17 +178,8 @@ function updateCheckResult(testId, checkType, passed, message) {
 
 // Simuler le viewport mobile
 function simulateMobileViewport() {
-  const instructions = t('testResponsiveDesignMobileInstructions');
-  chrome.devtools.inspectedWindow.eval(`
-    (function(instructions) {
-      // Instructions pour l'utilisateur
-      alert(instructions);
-      
-      return { message: 'Instructions affichées' };
-    })(${JSON.stringify(instructions)})
-  `, (result, isException) => {
-    console.log('Simulation mobile:', result);
-  });
+  const instructions = t('testResponsiveDesignMobileInstructions').replace(/\\n/g, '\n');
+  showPopin('Instructions', instructions);
 }
 
 // Mettre à jour le statut du test selon la validation manuelle

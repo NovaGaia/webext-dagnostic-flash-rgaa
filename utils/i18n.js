@@ -99,6 +99,9 @@ const translations = {
     testLanguageDefinedDesc: 'Vérification que l\'attribut lang est présent sur l\'élément html et correspond à la langue principale',
     testLanguageDefinedInfo: 'ℹ️ Test à valider manuellement. Pour savoir comment contrôler, consulter la documentation',
     testLanguageDefinedNameForStats: 'La langue principale du site est bien définie',
+    testLanguageDefinedInfoTitle: 'Informations',
+    testLanguageDefinedLabel: 'Lang:',
+    testLanguageDefinedNotFound: 'Aucune langue détectée',
     
     // Test: Liens explicites
     testExplicitLinksName: 'Les liens sont explicites',
@@ -109,6 +112,17 @@ const translations = {
     // Test: Redimensionnement texte
     testTextResizeName: 'Le contenu reste lisible lorsque la taille de caractères est portée à 200% de la taille par défaut dans le navigateur',
     testTextResizeDesc: 'Vérification que le contenu reste lisible et utilisable lorsque la taille des caractères est augmentée à 200%',
+    testTextResizeCheckViewport: '🔍 Vérification de la meta viewport...',
+    testTextResizeCheckUnits: '🔍 Vérification des unités de taille...',
+    testTextResizeCheckOverflow: '🔍 Vérification des débordements...',
+    testTextResizeViewportOk: '✓ Le zoom est autorisé',
+    testTextResizeViewportBlocked: '⚠ Le zoom peut être bloqué (user-scalable=no détecté)',
+    testTextResizeViewportMissing: '⚠ Meta viewport manquante',
+    testTextResizeUnitsFlexible: '✓ Unités de taille flexibles détectées (rem, em, %)',
+    testTextResizeUnitsFixed: '⚠ Utilisation importante de tailles fixes (px) qui peuvent limiter le redimensionnement',
+    testTextResizeNoOverflow: '✓ Aucun débordement critique détecté',
+    testTextResizeOverflowDetected: '⚠ Débordements possibles à 200% (éléments avec largeurs fixes)',
+    testTextResizeInstructions: 'Pour tester le redimensionnement à 200%:\\n\\n1. Ouvrez les paramètres du navigateur\\n2. Cherchez "Taille de police" ou "Zoom"\\n3. Définissez la taille à 200% ou utilisez Ctrl/Cmd + pour zoomer à 200%\\n4. Vérifiez visuellement que le contenu reste lisible et utilisable\\n5. Cochez la case de validation dans le panneau Diagnostic Flash RGAA',
     testTextResizeInfo: 'ℹ️ Test à valider manuellement. Pour savoir comment contrôler, consulter la documentation',
     testTextResizeNameForStats: 'Le contenu reste lisible lorsque la taille de caractères est portée à 200% de la taille par défaut dans le navigateur',
     
@@ -253,6 +267,32 @@ const translations = {
     testContrastsAnalyzing: 'Analysis in progress...',
     testContrastsReanalyze: 'Re-run analysis',
     testContrastsNameForStats: 'Contrasts are sufficient',
+    
+    // Test: Language defined
+    testLanguageDefinedName: 'The site\'s main language is well defined',
+    testLanguageDefinedDesc: 'Verification that the lang attribute is present on the html element and corresponds to the main language',
+    testLanguageDefinedInfo: 'ℹ️ Test to be manually validated. To know how to check, consult the documentation',
+    testLanguageDefinedNameForStats: 'The site\'s main language is well defined',
+    testLanguageDefinedInfoTitle: 'Information',
+    testLanguageDefinedLabel: 'Lang:',
+    testLanguageDefinedNotFound: 'No language detected',
+    
+    // Test: Text resize
+    testTextResizeName: 'Content remains readable when font size is increased to 200% of default size in browser',
+    testTextResizeDesc: 'Verification that content remains readable and usable when font size is increased to 200%',
+    testTextResizeCheckViewport: '🔍 Checking viewport meta...',
+    testTextResizeCheckUnits: '🔍 Checking size units...',
+    testTextResizeCheckOverflow: '🔍 Checking overflow...',
+    testTextResizeViewportOk: '✓ Zoom is allowed',
+    testTextResizeViewportBlocked: '⚠ Zoom may be blocked (user-scalable=no detected)',
+    testTextResizeViewportMissing: '⚠ Viewport meta missing',
+    testTextResizeUnitsFlexible: '✓ Flexible size units detected (rem, em, %)',
+    testTextResizeUnitsFixed: '⚠ Significant use of fixed sizes (px) that may limit resizing',
+    testTextResizeNoOverflow: '✓ No critical overflow detected',
+    testTextResizeOverflowDetected: '⚠ Possible overflow at 200% (elements with fixed widths)',
+    testTextResizeInstructions: 'To test resizing to 200%:\\n\\n1. Open browser settings\\n2. Look for "Font size" or "Zoom"\\n3. Set size to 200% or use Ctrl/Cmd + to zoom to 200%\\n4. Visually verify that content remains readable and usable\\n5. Check the validation box in the RGAA Flash Diagnostic panel',
+    testTextResizeInfo: 'ℹ️ Test to be manually validated. To know how to check, consult the documentation',
+    testTextResizeNameForStats: 'Content remains readable when font size is increased to 200% of default size in browser',
     
     // Validation
     validationPassed: '✓ Passed',

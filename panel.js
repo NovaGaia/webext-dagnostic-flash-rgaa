@@ -139,5 +139,6 @@ function initTranslations() {
 // Initialisation
 initTranslations();
 initCategories();
+initPopinEvents(); // Initialiser la popin
 initTests(); // Lancer les tests automatiquement
 console.log(t('panelInitialized'));

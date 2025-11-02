@@ -358,3 +358,69 @@ function initDocumentationBlocks() {
   });
 }
 
+// Afficher une popin avec un titre et un contenu
+function showPopin(title, content) {
+  const overlay = document.getElementById('popin-overlay');
+  const titleElement = document.getElementById('popin-title');
+  const bodyElement = document.getElementById('popin-body');
+  
+  if (overlay && titleElement && bodyElement) {
+    titleElement.textContent = title;
+    bodyElement.textContent = content;
+    overlay.classList.add('active');
+  }
+}
+
+// Fermer la popin
+function closePopin() {
+  const overlay = document.getElementById('popin-overlay');
+  if (overlay) {
+    overlay.classList.remove('active');
+  }
+}
+
+// Initialiser les événements de la popin (une seule fois au chargement)
+function initPopinEvents() {
+  const overlay = document.getElementById('popin-overlay');
+  const closeButton = document.getElementById('popin-close');
+  const okButton = document.getElementById('popin-ok');
+  
+  if (!overlay) return;
+  
+  // Éviter les doubles événements
+  if (overlay.hasAttribute('data-popin-initialized')) {
+    return;
+  }
+  overlay.setAttribute('data-popin-initialized', 'true');
+  
+  // Fermer avec le bouton ×
+  if (closeButton) {
+    closeButton.addEventListener('click', closePopin);
+  }
+  
+  // Fermer avec le bouton OK
+  if (okButton) {
+    okButton.addEventListener('click', closePopin);
+  }
+  
+  // Fermer en cliquant sur l'overlay (mais pas sur la modal)
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      closePopin();
+    }
+  });
+  
+  // Fermer avec la touche Escape (gestion globale une seule fois)
+  if (!window._popinEscapeHandler) {
+    window._popinEscapeHandler = (e) => {
+      if (e.key === 'Escape') {
+        const activeOverlay = document.getElementById('popin-overlay');
+        if (activeOverlay && activeOverlay.classList.contains('active')) {
+          closePopin();
+        }
+      }
+    };
+    document.addEventListener('keydown', window._popinEscapeHandler);
+  }
+}
+

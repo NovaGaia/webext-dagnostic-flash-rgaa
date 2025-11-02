@@ -13,6 +13,10 @@ function testLanguageDefined() {
     <div class="test-name">${t('testLanguageDefinedName')}</div>
     <div class="test-description">${t('testLanguageDefinedDesc')}</div>
     <div class="test-results" id="test-${testId}-results">
+      <div style="margin-bottom: 12px;">
+        <h4 style="margin: 0 0 10px 0; font-size: 14px; font-weight: 600; color: #333;">${t('testLanguageDefinedInfoTitle')}</h4>
+        <div class="language-detected" id="test-${testId}-detected" style="display: none;"></div>
+      </div>
       <div class="auto-check" id="test-${testId}-info">
         ${t('testLanguageDefinedInfo')}
       </div>
@@ -41,6 +45,49 @@ function testLanguageDefined() {
   // Initialiser le bloc de documentation
   initDocumentationBlocks();
   
+  // Récupérer et afficher l'attribut lang de la balise html
+  chrome.devtools.inspectedWindow.eval(`
+    (function() {
+      const htmlElement = document.documentElement;
+      const lang = htmlElement ? htmlElement.getAttribute('lang') : null;
+      
+      return {
+        lang: lang
+      };
+    })()
+  `, (result, isException) => {
+    const infoElement = document.getElementById(`test-${testId}-info`);
+    const detectedElement = document.getElementById(`test-${testId}-detected`);
+    
+    if (infoElement) {
+      if (isException) {
+        const errorMsg = isException.value || isException.description || isException.message || String(isException);
+        infoElement.textContent = '✗ ' + t('errorPageAnalysis') + ': ' + errorMsg;
+        infoElement.className = 'auto-check failed';
+        if (detectedElement) {
+          detectedElement.style.display = 'none';
+        }
+      } else if (result) {
+        // Le bloc Lang s'affiche en premier
+        if (detectedElement) {
+          if (result.lang) {
+            const detectedHtml = `<div><strong>${t('testLanguageDefinedLabel')}</strong> <code style="background-color: #e0e0e0; padding: 2px 6px; border-radius: 3px;">${escapeHtml(result.lang)}</code></div>`;
+            detectedElement.innerHTML = detectedHtml;
+            detectedElement.style.display = 'block';
+          } else {
+            const detectedHtml = `<div style="color: #999;"><strong>${t('testLanguageDefinedLabel')}</strong> <em>${t('testLanguageDefinedNotFound')}</em></div>`;
+            detectedElement.innerHTML = detectedHtml;
+            detectedElement.style.display = 'block';
+          }
+        }
+        
+        // Le message "Test à valider manuellement" s'affiche après le bloc Lang
+        infoElement.innerHTML = t('testLanguageDefinedInfo');
+        infoElement.className = 'auto-check';
+      }
+    }
+  });
+  
   // Écouteurs pour les options de validation
   const validationInputs = document.querySelectorAll(`input[name="test-${testId}-validation"]`);
   validationInputs.forEach(input => {
@@ -48,6 +95,13 @@ function testLanguageDefined() {
       updateLanguageDefinedStatus(testId, input.value);
     });
   });
+}
+
+// Fonction utilitaire pour échapper le HTML
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
 }
 
 // Mettre à jour le statut du test
