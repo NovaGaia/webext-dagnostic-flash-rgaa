@@ -15,10 +15,13 @@ function testPageTitle() {
     <div class="test-name">${t('testPageTitleName')}</div>
     <div class="test-description">${t('testPageTitleDesc')}</div>
     <div class="test-results" id="test-${testId}-results">
+      <div style="margin-bottom: 12px;">
+        <h4 style="margin: 0 0 10px 0; font-size: 14px; font-weight: 600; color: #333;">${t('testPageTitleInfoTitle')}</h4>
+        <div class="page-title-detected" id="test-${testId}-detected" style="display: none;"></div>
+      </div>
       <div class="auto-check" id="test-${testId}-info">
         ${t('testPageTitleInfo')}
       </div>
-      <div class="page-title-detected" id="test-${testId}-detected" style="display: none;"></div>
     </div>
     <div class="test-actions">
       <div class="test-validation">
@@ -68,11 +71,7 @@ function testPageTitle() {
           detectedElement.style.display = 'none';
         }
       } else if (result) {
-        // Le message "Test à valider manuellement" reste dans infoElement
-        infoElement.innerHTML = t('testPageTitleInfo');
-        infoElement.className = 'auto-check';
-        
-        // Le bloc Title/H1 va dans un élément séparé
+        // Le bloc Title/H1 s'affiche en premier
         if (detectedElement) {
           if (result.title || result.h1) {
             let detectedHtml = '';
@@ -95,6 +94,10 @@ function testPageTitle() {
             detectedElement.style.display = 'none';
           }
         }
+        
+        // Le message "Test à valider manuellement" s'affiche après le bloc Title/H1
+        infoElement.innerHTML = t('testPageTitleInfo');
+        infoElement.className = 'auto-check';
       }
     }
   });
