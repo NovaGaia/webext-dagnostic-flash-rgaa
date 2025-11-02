@@ -5,8 +5,14 @@
   "type": "module",
   "scripts": {
     "build": "echo 'No build step required for now'",
-    "package": "zip -r extension.zip . -x '*.git*' '*.DS_Store' 'node_modules/*' '*.zip'",
-    "generate-icons": "node generate-icons.js"
+    "package": "npm run package:chrome && npm run package:firefox",
+    "package:chrome": "node scripts/package-chrome.js",
+    "package:firefox": "node scripts/package-firefox.js",
+    "package:legacy": "zip -r extension.zip . -x '*.git*' '*.DS_Store' 'node_modules/*' '*.zip'",
+    "generate-icons": "node generate-icons.js",
+    "version": "node scripts/sync-version.js",
+    "changeset": "changeset",
+    "version-packages": "changeset version"
   },
   "keywords": [
     "extension",
@@ -18,6 +24,7 @@
   ],
   "author": "",
   "license": "MIT",
-  "devDependencies": {},
-  "dependencies": {}
+  "devDependencies": {
+    "@changesets/cli": "^2.29.7"
+  }
 }

@@ -1,0 +1,81 @@
+name: Package
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to package (optional, will use current version if not provided)'
+        required: false
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  package:
+    name: Package Extension
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Install zip
+        run: sudo apt-get update && sudo apt-get install -y zip
+
+      - name: Update version if tag provided
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          TAG_VERSION=${GITHUB_REF#refs/tags/v}
+          node -e "
+            const fs = require('fs');
+            const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+            const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
+            pkg.version = '$TAG_VERSION';
+            manifest.version = '$TAG_VERSION';
+            fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+            fs.writeFileSync('manifest.json', JSON.stringify(manifest, null, 2) + '\n');
+          "
+
+      - name: Read version from manifest.json
+        id: version
+        run: |
+          VERSION=$(node -p "require('./manifest.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Package Chrome
+        run: npm run package:chrome
+
+      - name: Package Firefox
+        run: npm run package:firefox
+
+      - name: Upload Chrome Package (Artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: chrome-package
+          path: diagnostic-flash-rgaa-chrome-v${{ steps.version.outputs.version }}.zip
+          retention-days: 30
+
+      - name: Upload Firefox Package (Artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: firefox-package
+          path: diagnostic-flash-rgaa-firefox-v${{ steps.version.outputs.version }}.zip
+          retention-days: 30
+
+      - name: Output download info
+        run: |
+          echo "## 📦 Packages créés" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Chrome**: \`diagnostic-flash-rgaa-chrome-v${{ steps.version.outputs.version }}.zip\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Firefox**: \`diagnostic-flash-rgaa-firefox-v${{ steps.version.outputs.version }}.zip\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Les packages sont disponibles dans les artifacts de ce workflow." >> $GITHUB_STEP_SUMMARY
+

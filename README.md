@@ -2,26 +2,43 @@
 
 Extension Chrome et Firefox pour réaliser les diagnostics flash d'accessibilité selon le référentiel RGAA.
 
-## Installation
+## 🚀 Installation
 
-### Développement
+### Développement (installation immédiate)
 
-1. Cloner le dépôt
-2. Charger l'extension non empaquetée dans Chrome/Firefox :
-   - **Chrome** : `chrome://extensions/` → Mode développeur → Charger l'extension non empaquetée
-   - **Firefox** : `about:debugging` → Ce Firefox → Charger un module complémentaire temporaire
+L'extension est prête à être testée ! Suivez ces étapes :
+
+#### Chrome
+
+1. Ouvrez `chrome://extensions/`
+2. Activez le **Mode développeur** (toggle en haut à droite)
+3. Cliquez sur **Charger l'extension non empaquetée**
+4. Sélectionnez ce dossier du projet
+5. ✅ L'extension est chargée !
+
+#### Firefox
+
+1. Ouvrez `about:debugging`
+2. Cliquez sur **Ce Firefox** dans le menu de gauche
+3. Cliquez sur **Charger un module complémentaire temporaire**
+4. Naviguez jusqu'à ce dossier et sélectionnez `manifest.json`
+5. ✅ L'extension est chargée !
 
 ### Production
 
-Générer le package :
+Générer les packages pour publication :
 
 ```bash
-npm run package
+npm run package           # Les deux packages (Chrome + Firefox)
+npm run package:chrome    # Package Chrome uniquement
+npm run package:firefox   # Package Firefox uniquement
 ```
 
-Cela créera un fichier `extension.zip` contenant l'extension prête à être publiée.
+Les fichiers `.zip` seront créés à la racine du projet :
+- `diagnostic-flash-rgaa-chrome-vX.Y.Z.zip`
+- `diagnostic-flash-rgaa-firefox-vX.Y.Z.zip`
 
-## Génération des icônes
+## 🎨 Génération des icônes
 
 Générer les icônes depuis un fichier SVG source :
 
@@ -29,29 +46,61 @@ Générer les icônes depuis un fichier SVG source :
 npm run generate-icons
 ```
 
-## Versioning
+> **Note** : Les icônes sont optionnelles. L'extension fonctionne sans icônes (elle utilisera l'icône par défaut du navigateur).
 
-La version de l'extension est gérée dans `manifest.json` et `package.json`. La version s'affiche automatiquement dans l'interface du panneau DevTools.
+## 🧪 Tester l'extension
 
-### Mise à jour de la version
+1. Ouvrez n'importe quelle page web (ex: https://example.com)
+2. Ouvrez les **DevTools** (F12 ou Cmd+Option+I / Ctrl+Shift+I)
+3. Cherchez l'onglet **"Diagnostic Flash RGAA"** dans les DevTools
+4. Cliquez dessus pour voir le panneau de l'extension
+5. Les tests s'exécutent automatiquement au chargement
+6. Validez manuellement chaque test selon les critères RGAA
 
-Pour mettre à jour la version, modifier le champ `version` dans :
-- `manifest.json`
-- `package.json`
+## 📦 Versioning et Releases
 
-Le format utilisé est le [Semantic Versioning](https://semver.org/) : `MAJOR.MINOR.PATCH`
+Ce projet utilise [Changesets](https://github.com/changesets/changesets) pour gérer le versioning et les releases automatiques.
 
-Exemples :
-- `1.0.0` : Version initiale
-- `1.1.0` : Nouvelle fonctionnalité (minor)
-- `1.1.1` : Correction de bug (patch)
-- `2.0.0` : Changement majeur (major)
+### Ajouter un changeset
 
-## Structure du projet
+Lorsque vous apportez des modifications qui nécessitent un changement de version :
+
+```bash
+npm run changeset
+```
+
+Cela vous guidera pour :
+1. Sélectionner le type de changement (major, minor, patch)
+2. Décrire les changements dans un fichier markdown
+
+### Publier une nouvelle version
+
+1. Créez un PR avec vos changements et changesets
+2. Mergez le PR dans `main`
+3. Un workflow GitHub Actions créera automatiquement un PR "chore: version packages"
+4. Mergez ce PR pour :
+   - Créer un tag Git avec la nouvelle version (`vX.Y.Z`)
+   - Générer le `CHANGELOG.md`
+   - Créer une release GitHub avec les packages Chrome et Firefox
+
+### Packages de release
+
+Les packages sont automatiquement générés et attachés à chaque release GitHub :
+- `diagnostic-flash-rgaa-chrome-vX.Y.Z.zip`
+- `diagnostic-flash-rgaa-firefox-vX.Y.Z.zip`
+
+### Workflows GitHub Actions
+
+- **`.github/workflows/changesets.yml`** : Crée automatiquement un PR de version quand des changesets sont mergés
+- **`.github/workflows/release.yml`** : Crée une release GitHub avec packages quand le PR de version est mergé
+- **`.github/workflows/package.yml`** : Package manuel déclenchable via GitHub Actions UI ou tags Git
+
+## 📁 Structure du projet
 
 ```
 .
 ├── manifest.json          # Manifest de l'extension (Manifest V3)
+├── manifest-no-icons.json # Manifest alternatif sans icônes
 ├── package.json          # Configuration Node.js et scripts
 ├── background.js         # Service worker (background)
 ├── devtools.html         # Page d'entrée DevTools
@@ -60,18 +109,22 @@ Exemples :
 ├── panel.js              # Orchestration principale
 ├── utils/                # Utilitaires
 │   ├── i18n.js          # Système de traduction
-│   ├── ui.js            # Fonctions UI
-│   ├── stats.js         # Gestion des statistiques
-│   └── cleanup.js       # Nettoyage des visualisations
-└── tests/               # Tests d'accessibilité
-    ├── navigation/      # Tests de navigation
-    ├── langage/        # Tests de langage & interface
-    └── structuration/  # Tests de structuration
+│   ├── ui.js             # Fonctions UI
+│   ├── stats.js          # Gestion des statistiques
+│   └── cleanup.js        # Nettoyage des visualisations
+├── tests/                # Tests d'accessibilité
+│   ├── navigation/      # Tests de navigation
+│   ├── langage/          # Tests de langage & interface
+│   └── structuration/    # Tests de structuration
+└── scripts/              # Scripts utilitaires
+    ├── package-chrome.js # Script de packaging Chrome
+    ├── package-firefox.js# Script de packaging Firefox
+    └── sync-version.js   # Synchronisation des versions
 ```
 
-## Tests d'accessibilité
+## ✅ Tests d'accessibilité
 
-L'extension vérifie plusieurs critères d'accessibilité :
+L'extension vérifie plusieurs critères d'accessibilité selon le référentiel RGAA :
 
 ### Navigation & utilisation
 - Le site est optimisé pour toutes les tailles d'écran
@@ -94,13 +147,18 @@ L'extension vérifie plusieurs critères d'accessibilité :
 - Chaque champ de formulaire est clairement associé à son intitulé
 - Les informations relatives aux fichiers proposés en téléchargement sont indiquées
 
-## Utilisation
+## 🔧 Scripts disponibles
 
-1. Ouvrir les DevTools (F12)
-2. Aller dans l'onglet "Diagnostic Flash RGAA"
-3. Les tests s'exécutent automatiquement au chargement
-4. Valider manuellement chaque test selon les critères RGAA
+```bash
+npm run changeset          # Créer un nouveau changeset
+npm run version-packages   # Versionner les packages (via Changesets)
+npm run version           # Synchroniser manifest.json avec package.json
+npm run package:chrome    # Créer le package Chrome
+npm run package:firefox   # Créer le package Firefox
+npm run package           # Créer les deux packages
+npm run generate-icons    # Générer les icônes depuis SVG
+```
 
-## Licence
+## 📝 Licence
 
 MIT

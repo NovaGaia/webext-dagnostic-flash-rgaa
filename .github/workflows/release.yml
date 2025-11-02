@@ -1,0 +1,85 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    # Se déclenche quand le commit de version est pushé
+    if: "contains(github.event.head_commit.message, 'chore: version packages') || github.event_name == 'workflow_dispatch'"
+    
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Install zip
+        run: sudo apt-get update && sudo apt-get install -y zip
+
+      - name: Read version from manifest.json
+        id: version
+        run: |
+          VERSION=$(node -p "require('./manifest.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "📦 Version détectée: $VERSION"
+
+      - name: Package Chrome
+        run: npm run package:chrome
+
+      - name: Package Firefox
+        run: npm run package:firefox
+
+      - name: Read CHANGELOG
+        id: changelog
+        run: |
+          if [ -f CHANGELOG.md ]; then
+            VERSION="${{ steps.version.outputs.version }}"
+            # Extraire la section de changelog pour cette version
+            CHANGELOG_CONTENT=$(sed -n "/## \\\[$VERSION\\\]/,/## \\\[/p" CHANGELOG.md | head -n -1 || sed -n "/## \\\[$VERSION\\\]/,\$p" CHANGELOG.md)
+            echo "changelog<<EOF" >> $GITHUB_OUTPUT
+            echo "$CHANGELOG_CONTENT" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "changelog=Consultez le CHANGELOG.md pour les détails." >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Git Tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "v${{ steps.version.outputs.version }}" -m "Release v${{ steps.version.outputs.version }}"
+          git push origin "v${{ steps.version.outputs.version }}"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: Release v${{ steps.version.outputs.version }}
+          body: |
+            ## Version ${{ steps.version.outputs.version }}
+
+            ${{ steps.changelog.outputs.changelog }}
+
+            ### Téléchargements
+
+            - **Chrome**: `diagnostic-flash-rgaa-chrome-v${{ steps.version.outputs.version }}.zip`
+            - **Firefox**: `diagnostic-flash-rgaa-firefox-v${{ steps.version.outputs.version }}.zip`
+          files: |
+            diagnostic-flash-rgaa-chrome-v${{ steps.version.outputs.version }}.zip
+            diagnostic-flash-rgaa-firefox-v${{ steps.version.outputs.version }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

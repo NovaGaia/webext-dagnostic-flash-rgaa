@@ -10,3 +10,6 @@ build/
 *.swo
 *~
 sources/
+.changeset/*.md
+!.changeset/README.md
+!.changeset/config.json
