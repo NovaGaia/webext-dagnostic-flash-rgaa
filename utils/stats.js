@@ -21,6 +21,8 @@ const categories = {
 
 // Mettre à jour les statistiques
 function updateStats() {
+  const TOTAL_CRITERIA = 15; // Nombre total de critères RGAA
+  
   let total = 0;
   let passed = 0;
   let failed = 0;
@@ -41,10 +43,23 @@ function updateStats() {
     });
   });
   
+  // Calcul du score sur 100
+  // Algorithme: (nb total de critères (15) - nb de critères non applicables) / nb de critères validés
+  // Score = (nb_validés / (15 - nb_non_applicables)) * 100
+  let score = 0;
+  const applicableCriteria = TOTAL_CRITERIA - notApplicable;
+  if (applicableCriteria > 0) {
+    score = Math.round((passed / applicableCriteria) * 100);
+  } else {
+    // Si tous les critères sont non applicables, score = 0 ou non défini
+    score = 0;
+  }
+  
   const totalEl = document.getElementById('totalTests');
   const passedEl = document.getElementById('passedTests');
   const failedEl = document.getElementById('failedTests');
   const notApplicableEl = document.getElementById('notApplicableTests');
+  const scoreEl = document.getElementById('scoreValue');
   
   if (totalEl) {
     totalEl.textContent = total;
@@ -63,6 +78,19 @@ function updateStats() {
   }
   if (notApplicableEl) {
     notApplicableEl.textContent = notApplicable;
+  }
+  if (scoreEl) {
+    scoreEl.textContent = score;
+    // Changer la couleur selon le score
+    if (score >= 90) {
+      scoreEl.style.color = '#4caf50'; // Vert pour excellent
+    } else if (score >= 75) {
+      scoreEl.style.color = '#8bc34a'; // Vert clair pour bon
+    } else if (score >= 50) {
+      scoreEl.style.color = '#ff9800'; // Orange pour moyen
+    } else {
+      scoreEl.style.color = '#f44336'; // Rouge pour faible
+    }
   }
 }
 
