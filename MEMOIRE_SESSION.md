@@ -50,6 +50,98 @@ Extension navigateur (Chrome/Firefox) pour réaliser le diagnostic flash d'acces
 - Messages explicites si les éléments ne sont pas trouvés
 - Traductions ajoutées : `testPageTitleLabel`, `testPageTitleH1Label`, `testPageTitleNotFound`, `testPageTitleH1NotFound`
 
+### 2. Option "Non applicable" pour tous les tests
+
+**Fichiers modifiés** : Tous les fichiers de tests (`tests/**/*.js`), `utils/stats.js`, `panel.html`, `utils/i18n.js`
+
+**Fonctionnalité ajoutée** : Possibilité de marquer chaque test comme "Non applicable" (au-delà de "Réussi", "Échoué", "Non-testé").
+
+**Implémentation** :
+- Ajout d'une 4ème option radio "Non applicable" dans chaque test
+- Statut `'not-applicable'` géré dans toutes les fonctions `updateXxxStatus()`
+- Compteur "Non applicables" ajouté dans les statistiques en haut de page
+- Style CSS `.test-item.not-applicable` avec bordure grise et opacité réduite
+- Les tests non applicables sont comptés séparément et inclus dans le diagramme circulaire
+
+### 3. Score sur 100 et diagramme circulaire
+
+**Fichiers modifiés** : `utils/stats.js`, `panel.html`, `utils/i18n.js`
+
+**Fonctionnalités ajoutées** :
+
+1. **Calcul du score sur 100** :
+   - Algorithme : `Score = (nb_validés / (15 - nb_non_applicables)) * 100`
+   - Constante `TOTAL_CRITERIA = 15` (nombre total de critères RGAA)
+   - Affichage avec couleur dynamique selon le score :
+     - ≥ 90 : Vert (#4caf50) - Excellent
+     - ≥ 75 : Vert clair (#8bc34a) - Bon
+     - ≥ 50 : Orange (#ff9800) - Moyen
+     - < 50 : Rouge (#f44336) - Faible
+
+2. **Diagramme circulaire (pie chart)** :
+   - Visualisation SVG des 3 catégories : Réussis, Échoués, Non Applicable
+   - Couleurs : Vert (#4caf50), Rouge (#f44336), Gris (#9e9e9e)
+   - Légende dynamique affichant uniquement les catégories avec des tests
+   - Mise à jour automatique à chaque changement de statut
+   - Gestion du cas vide (cercle gris avec message)
+
+### 4. Compteurs de progression par catégorie
+
+**Fichiers modifiés** : `utils/stats.js`, `panel.html`
+
+**Fonctionnalité ajoutée** : Affichage du nombre de tests validés sur le total pour chaque catégorie.
+
+**Format d'affichage** : `(validé / total)` à côté du titre de chaque catégorie
+- Exemple : Navigation & utilisation (4 / 4)
+- Exemple : Langage & interface (5 / 7)
+- Exemple : Structuration de l'information (3 / 4)
+
+**Implémentation** :
+- Ajout de `totalTests` dans chaque catégorie (navigation: 4, langage: 7, structuration: 4)
+- Fonction `updateCategoryProgress()` qui calcule et affiche les compteurs
+- Couleur verte si tous les tests sont validés
+- Mise à jour automatique à chaque changement
+
+### 5. Système de versioning et packaging avec Changesets
+
+**Fichiers créés/modifiés** : 
+- `.changeset/config.json` : Configuration Changesets
+- `.changeset/README.md` : Documentation Changesets
+- `.github/workflows/changesets.yml` : Workflow pour créer les PRs de version
+- `.github/workflows/release.yml` : Workflow pour créer les releases GitHub
+- `.github/workflows/package.yml` : Workflow pour package manuel
+- `scripts/sync-version.js` : Synchronisation des versions entre `package.json` et `manifest.json`
+- `scripts/package-chrome.js` : Script de packaging Chrome
+- `scripts/package-firefox.js` : Script de packaging Firefox
+- `package.json` : Scripts npm ajoutés
+- `CHANGELOG.md` : Changelog généré automatiquement
+
+**Fonctionnalités** :
+- **Versioning automatique** avec Changesets
+- **Packaging automatique** : Génération de `.zip` séparés pour Chrome et Firefox lors des releases
+- **Synchronisation des versions** : Script qui synchronise `package.json`, `manifest.json` et `manifest-no-icons.json`
+- **GitHub Actions** :
+  - Création automatique de PR "Version Packages" quand des changesets sont mergés
+  - Génération automatique de releases GitHub avec packages attachés
+  - Package manuel déclenchable via l'interface GitHub Actions ou tags Git
+
+**Scripts disponibles** :
+- `npm run changeset` : Créer un nouveau changeset
+- `npm run version-packages` : Versionner les packages (via Changesets)
+- `npm run version` : Synchroniser les versions
+- `npm run package:chrome` : Créer le package Chrome
+- `npm run package:firefox` : Créer le package Firefox
+- `npm run package` : Créer les deux packages
+
+**Workflow de release** :
+1. Développement + création de changeset (`npm run changeset`)
+2. PR avec changements + changeset → Merge dans `main`
+3. GitHub Actions crée automatiquement un PR "chore: version packages"
+4. Merge du PR de version → Création automatique :
+   - Tag Git `vX.Y.Z`
+   - CHANGELOG.md mis à jour
+   - Release GitHub avec packages Chrome et Firefox attachés
+
 ---
 
 ## 🎯 Réalisations principales de cette session (historique)
@@ -286,13 +378,16 @@ La logique d'analyse des contrastes a été divisée en 5 modules pour améliore
 ### 7. Points techniques importants
 
 #### Système de validation
-- 3 options toujours disponibles : "Réussi", "Échoué", "Non-testé"
+- 4 options disponibles : "Réussi", "Échoué", "Non-testé", "Non applicable"
 - Radio buttons avec `name="test-{testId}-validation"`
 - Lorsque "Non-testé" est sélectionné, le test est retiré de `categories.X.tests[]` pour ne pas être compté
-- Lorsque "Réussi" ou "Échoué" est sélectionné, le test est ajouté/mis à jour dans `categories.X.tests[]`
+- Lorsque "Réussi", "Échoué" ou "Non applicable" est sélectionné, le test est ajouté/mis à jour dans `categories.X.tests[]`
 
 #### Statistiques
-- Compteurs globaux : Total, Réussis, Échoués
+- Compteurs globaux : Total, Réussis, Échoués, Non applicables
+- Score sur 100 : Calculé avec l'algorithme `(nb_validés / (15 - nb_non_applicables)) * 100`
+- Diagramme circulaire : Visualisation SVG des proportions (Réussis, Échoués, Non Applicable)
+- Compteurs par catégorie : Affichage `(validé / total)` à côté du titre de chaque catégorie
 - Mis à jour automatiquement via `updateStats()` après chaque changement
 - Calculé depuis `categories.navigation.tests`, `categories.langage.tests`, `categories.structuration.tests`
 
@@ -405,8 +500,13 @@ webext-dagnostic-flash-rgaa/
 - ✅ Deux moyens de navigation
 - ✅ Fichiers téléchargeables (avec détection auto)
 
-#### Langage & interface (2/2)
-- ✅ Contrastes
+#### Langage & interface (7/7)
+- ✅ Contrastes (beta)
+- ✅ Information par la couleur
+- ✅ Alternatives média
+- ✅ Langue principale
+- ✅ Liens explicites
+- ✅ Taille de texte 200%
 - ✅ Animations contrôlables
 
 #### Structuration de l'information (4/4)
@@ -430,6 +530,12 @@ webext-dagnostic-flash-rgaa/
 - ✅ Mise en évidence interactive des éléments avec problèmes de contraste
 - ✅ Auto-refresh des contrastes sur changement du DOM (MutationObserver)
 - ✅ Affichage automatique du titre et H1 de la page
+- ✅ Option "Non applicable" pour tous les tests (4 options de validation)
+- ✅ Score sur 100 avec calcul automatique
+- ✅ Diagramme circulaire pour visualiser la répartition des résultats
+- ✅ Compteurs de progression par catégorie
+- ✅ Système de versioning avec Changesets
+- ✅ Packaging automatique Chrome et Firefox via GitHub Actions
 
 ---
 
@@ -527,8 +633,49 @@ Ces IDs permettent de mettre à jour le contenu dynamiquement si nécessaire.
 1. **Performance** : La visualisation clavier peut être lourde avec beaucoup d'éléments. Le debounce est crucial.
 2. **Accessibilité** : L'extension elle-même doit être accessible (utilise déjà `aria-label`, `aria-expanded`)
 3. **Compatibilité** : Fonctionne sur Chrome et Firefox (Manifest V3)
-4. **Maintenance** : Structure modulaire facilite l'ajout de nouveaux tests
-5. **Traductions** : Tous les textes doivent passer par `t()` pour faciliter l'ajout de nouvelles langues
+4. **Versioning** : Utiliser `npm run changeset` avant chaque PR contenant des changements
+5. **Packaging** : Les packages sont générés automatiquement lors des releases GitHub
+6. **Maintenance** : Structure modulaire facilite l'ajout de nouveaux tests
+7. **Traductions** : Tous les textes doivent passer par `t()` pour faciliter l'ajout de nouvelles langues
+
+---
+
+## 📊 Détails techniques récents
+
+### Système de statistiques étendu
+
+**Structure des catégories** (`utils/stats.js`) :
+```javascript
+const categories = {
+  navigation: { tests: [], totalTests: 4 },
+  langage: { tests: [], totalTests: 7 },
+  structuration: { tests: [], totalTests: 4 }
+};
+```
+
+**Fonctions principales** :
+- `updateStats()` : Met à jour tous les compteurs globaux, le score et le diagramme
+- `updateCategoryProgress()` : Met à jour les compteurs de progression par catégorie
+- `updatePieChart()` : Dessine le diagramme circulaire SVG avec légende
+
+### Validation étendue
+
+**Statuts possibles** :
+- `'passed'` : Test réussi (vert)
+- `'failed'` : Test échoué (rouge)
+- `'not-applicable'` : Test non applicable (gris, opacité réduite)
+- `''` (vide) : Non testé (retiré du comptage)
+
+**Comptage** :
+- Les tests "Non applicables" sont comptés séparément
+- Ils sont inclus dans le total validé pour le calcul du score
+- Ils sont exclus du dénominateur du score (15 - nb_non_applicables)
+
+### Format d'affichage des compteurs de catégorie
+
+**Format simplifié** : `(validé / total)` à côté du titre de chaque catégorie
+- Couleur verte automatique quand tous les tests sont validés
+- Mise à jour en temps réel lors des changements de statut
 
 ---
 
