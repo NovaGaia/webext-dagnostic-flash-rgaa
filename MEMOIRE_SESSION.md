@@ -127,15 +127,15 @@ Extension navigateur (Chrome/Firefox) pour réaliser le diagnostic flash d'acces
 - **Utilisation de pnpm** : Tous les workflows GitHub utilisent pnpm au lieu de npm
 
 **Scripts disponibles** :
-- `pnpm run changeset` : Créer un nouveau changeset
-- `pnpm run version-packages` : Versionner les packages (via Changesets)
-- `pnpm run version` : Synchroniser les versions
-- `pnpm run package:chrome` : Créer le package Chrome
-- `pnpm run package:firefox` : Créer le package Firefox
-- `pnpm run package` : Créer les deux packages
+- `pppnpm run changeset` : Créer un nouveau changeset
+- `pppnpm run version-packages` : Versionner les packages (via Changesets)
+- `pppnpm run version` : Synchroniser les versions
+- `pppnpm run package:chrome` : Créer le package Chrome
+- `pppnpm run package:firefox` : Créer le package Firefox
+- `pppnpm run package` : Créer les deux packages
 
 **Workflow de release** :
-1. Développement + création de changeset (`pnpm run changeset`)
+1. Développement + création de changeset (`pppnpm run changeset`)
 2. PR avec changements + changeset → Merge dans `main`
 3. GitHub Actions crée automatiquement un PR "chore: version packages"
 4. Merge du PR de version → Création automatique :
@@ -233,18 +233,25 @@ Extension navigateur (Chrome/Firefox) pour réaliser le diagnostic flash d'acces
 
 ### 10. Migration vers pnpm dans les workflows GitHub
 
-**Fichiers modifiés** : `.github/workflows/release.yml`, `.github/workflows/package.yml`, `.github/workflows/changesets.yml`
+**Fichiers modifiés** : `.github/workflows/release.yml`, `.github/workflows/package.yml`, `.github/workflows/changesets.yml`, `package.json`
 
 **Modifications** :
 - Ajout de l'étape "Setup pnpm" avec `pnpm/action-setup@v4`
 - Configuration de `setup-node` avec `cache: 'pnpm'`
-- Remplacement de `npm ci` par `pnpm install --frozen-lockfile`
-- Remplacement de toutes les commandes `npm run` par `pnpm run`
+- Remplacement de `pnpm install --frozen-lockfile` par `pnpm install --frozen-lockfile`
+- Remplacement de toutes les commandes `ppnpm run` par `pppnpm run`
+- Création du script `version-all` dans `package.json` pour combiner `changeset version` et `sync-version.js`
+- Correction du workflow `changesets.yml` : suppression du déclenchement sur `pull_request` (uniquement `push` vers `main`)
+
+**Problèmes résolus** :
+- L'action `changesets/action` ne peut pas exécuter de commandes avec `&&` directement dans le champ `version`, d'où la création du script `version-all`
+- Le workflow se déclenchait sur `pull_request`, causant des erreurs de validation lors de la création de PR (branche de base invalide)
 
 **Bénéfices** :
 - Installation plus rapide grâce au cache pnpm
 - Utilisation cohérente avec le développement local (présence de `pnpm-lock.yaml`)
 - Meilleure gestion des dépendances avec pnpm
+- Workflow changesets fonctionnel avec création correcte des PRs de version
 
 ---
 
@@ -778,7 +785,7 @@ Ces IDs permettent de mettre à jour le contenu dynamiquement si nécessaire.
 1. **Performance** : La visualisation clavier peut être lourde avec beaucoup d'éléments. Le debounce est crucial.
 2. **Accessibilité** : L'extension elle-même doit être accessible (utilise déjà `aria-label`, `aria-expanded`)
 3. **Compatibilité** : Fonctionne sur Chrome et Firefox (Manifest V3)
-4. **Versioning** : Utiliser `npm run changeset` avant chaque PR contenant des changements
+4. **Versioning** : Utiliser `pnpm run changeset` avant chaque PR contenant des changements
 5. **Packaging** : Les packages sont générés automatiquement lors des releases GitHub
 6. **Maintenance** : Structure modulaire facilite l'ajout de nouveaux tests
 7. **Traductions** : Tous les textes doivent passer par `t()` pour faciliter l'ajout de nouvelles langues

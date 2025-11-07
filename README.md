@@ -29,9 +29,9 @@ L'extension est prête à être testée ! Suivez ces étapes :
 Générer les packages pour publication :
 
 ```bash
-npm run package           # Les deux packages (Chrome + Firefox)
-npm run package:chrome    # Package Chrome uniquement
-npm run package:firefox   # Package Firefox uniquement
+pppnpm run package           # Les deux packages (Chrome + Firefox)
+pppnpm run package:chrome    # Package Chrome uniquement
+pppnpm run package:firefox   # Package Firefox uniquement
 ```
 
 Les fichiers `.zip` seront créés à la racine du projet :
@@ -43,7 +43,7 @@ Les fichiers `.zip` seront créés à la racine du projet :
 Générer les icônes depuis un fichier SVG source :
 
 ```bash
-npm run generate-icons
+pppnpm run generate-icons
 ```
 
 > **Note** : Les icônes sont optionnelles. L'extension fonctionne sans icônes (elle utilisera l'icône par défaut du navigateur).
@@ -66,7 +66,7 @@ Ce projet utilise [Changesets](https://github.com/changesets/changesets) pour g�
 Lorsque vous apportez des modifications qui nécessitent un changement de version :
 
 ```bash
-npm run changeset
+pppnpm run changeset
 ```
 
 Cela vous guidera pour :
@@ -150,13 +150,14 @@ L'extension vérifie plusieurs critères d'accessibilité selon le référentiel
 ## 🔧 Scripts disponibles
 
 ```bash
-npm run changeset          # Créer un nouveau changeset
-npm run version-packages   # Versionner les packages (via Changesets)
-npm run version           # Synchroniser manifest.json avec package.json
-npm run package:chrome    # Créer le package Chrome
-npm run package:firefox   # Créer le package Firefox
-npm run package           # Créer les deux packages
-npm run generate-icons    # Générer les icônes depuis SVG
+pppnpm run changeset          # Créer un nouveau changeset
+pppnpm run version-packages   # Versionner les packages (via Changesets)
+pppnpm run version           # Synchroniser manifest.json avec package.json
+pppnpm run version-all       # Versionner les packages ET synchroniser (utilisé par GitHub Actions)
+pppnpm run package:chrome    # Créer le package Chrome
+pppnpm run package:firefox   # Créer le package Firefox
+pppnpm run package           # Créer les deux packages
+pppnpm run generate-icons    # Générer les icônes depuis SVG
 ```
 
 ## 📝 Licence
