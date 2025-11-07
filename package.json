@@ -12,7 +12,8 @@
     "generate-icons": "node generate-icons.js",
     "version": "node scripts/sync-version.js",
     "changeset": "changeset",
-    "version-packages": "changeset version"
+    "version-packages": "changeset version",
+    "version-all": "changeset version && node scripts/sync-version.js"
   },
   "keywords": [
     "extension",
