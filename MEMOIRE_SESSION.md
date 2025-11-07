@@ -124,23 +124,127 @@ Extension navigateur (Chrome/Firefox) pour réaliser le diagnostic flash d'acces
   - Création automatique de PR "Version Packages" quand des changesets sont mergés
   - Génération automatique de releases GitHub avec packages attachés
   - Package manuel déclenchable via l'interface GitHub Actions ou tags Git
+- **Utilisation de pnpm** : Tous les workflows GitHub utilisent pnpm au lieu de npm
 
 **Scripts disponibles** :
-- `npm run changeset` : Créer un nouveau changeset
-- `npm run version-packages` : Versionner les packages (via Changesets)
-- `npm run version` : Synchroniser les versions
-- `npm run package:chrome` : Créer le package Chrome
-- `npm run package:firefox` : Créer le package Firefox
-- `npm run package` : Créer les deux packages
+- `pnpm run changeset` : Créer un nouveau changeset
+- `pnpm run version-packages` : Versionner les packages (via Changesets)
+- `pnpm run version` : Synchroniser les versions
+- `pnpm run package:chrome` : Créer le package Chrome
+- `pnpm run package:firefox` : Créer le package Firefox
+- `pnpm run package` : Créer les deux packages
 
 **Workflow de release** :
-1. Développement + création de changeset (`npm run changeset`)
+1. Développement + création de changeset (`pnpm run changeset`)
 2. PR avec changements + changeset → Merge dans `main`
 3. GitHub Actions crée automatiquement un PR "chore: version packages"
 4. Merge du PR de version → Création automatique :
    - Tag Git `vX.Y.Z`
    - CHANGELOG.md mis à jour
    - Release GitHub avec packages Chrome et Firefox attachés
+
+### 6. Vue récapitulative en tableau des résultats
+
+**Fichiers modifiés** : `utils/stats.js`, `panel.html`
+
+**Fonctionnalité ajoutée** : Tableau récapitulatif affichant tous les tests avec leurs résultats.
+
+**Structure du tableau** :
+- **Colonne 1 - "Critères"** : Affiche `{Numéro}. {Nom du test}` pour chaque test (ex: "1. Le site est optimisé pour toutes les tailles d'écran")
+- **Colonne 2 - "Résultat"** : Affiche OK (vert), KO (rouge), N/A (gris) ou "-" (non testé) selon le statut
+
+**Implémentation** :
+- Mapping des tests (`testsMapping`) avec numéro, nom et catégorie pour chaque test
+- Fonction `updateSummaryTable()` qui génère le tableau dynamiquement
+- Mise à jour automatique via `updateStats()`
+- Styles CSS pour les couleurs et la mise en forme
+- Une ligne par test (15 tests au total)
+
+### 7. Système d'onglets (Audit / Scores)
+
+**Fichiers modifiés** : `panel.html`, `panel.js`, `utils/stats.js`
+
+**Fonctionnalité ajoutée** : Interface avec deux onglets pour organiser les fonctionnalités.
+
+**Onglet "Audit"** (ouvert par défaut) :
+- Section des compteurs (Total, Réussis, Échoués, Non applicables, Score)
+- Bouton "Réinitialiser tous les tests"
+- Les 3 catégories dépliables avec tous les tests, checkboxes et boutons d'analyse
+
+**Onglet "Scores"** :
+- Section des compteurs (identique à l'onglet Audit)
+- Diagramme circulaire de répartition des résultats
+- Tableau récapitulatif (Critères / Résultat)
+
+**Implémentation** :
+- Structure d'onglets avec CSS (bordure active, hover, etc.)
+- Fonction `initTabs()` pour gérer le changement d'onglet
+- Compteurs synchronisés dans les deux onglets via `updateStats()`
+- Navigation fluide entre les onglets
+
+### 8. Analyse des champs de formulaire
+
+**Fichier** : `tests/structuration/form-fields.js`
+
+**Fonctionnalité ajoutée** : Bouton d'analyse "Analyser les champs de formulaire (beta)" qui visualise les labels et inputs.
+
+**Visualisation** :
+- **Labels** : Bordure verte avec badge "Label"
+- **Inputs** : 
+  - Bordure bleue si lié à un label (badge "Input ✓")
+  - Bordure rouge si non lié (badge "Input ✗")
+  - Badge gris indiquant la méthode de liaison (for/id, wrapping, aria-labelledby, aria-label)
+
+**Détection des liaisons** :
+- `label[for]` + `input[id]`
+- Input dans un `<label>` (wrapping)
+- `aria-labelledby`
+- `aria-label`
+
+**Fonctionnalités techniques** :
+- Mise à jour automatique au scroll et resize
+- Nettoyage intégré dans `cleanupAllVisualizations()`
+- Gestion des positions avec `position: fixed` et `getBoundingClientRect()`
+
+### 9. Analyse des alternatives textuelles
+
+**Fichier** : `tests/langage/media-alternatives.js`
+
+**Fonctionnalité ajoutée** : Bouton d'analyse "Analyser les alternatives textuelles (beta)" qui détecte et affiche les alternatives textuelles des images, SVG, vidéos et audio.
+
+**Visualisation** :
+- **Bordure verte** si alternative présente
+- **Bordure rouge** si aucune alternative
+- **Bulle (tooltip)** au-dessus de l'élément avec :
+  - Le texte de l'alternative (limité à 100 caractères)
+  - La méthode utilisée (alt, aria-label, title, svg-title, etc.)
+- **Indicateur "Pas d'alternative"** pour les éléments sans alternative
+
+**Détection des alternatives** :
+- Pour les images : `alt`, `aria-label`, `title`
+- Pour les SVG : `aria-label`, `title`, `<title>` dans le SVG, `role="img"` avec `aria-label`
+- Pour les vidéos/audio : `aria-label`, `title`
+
+**Fonctionnalités techniques** :
+- Bulles positionnées avec `position: fixed` et `getBoundingClientRect()`
+- Mise à jour automatique au scroll et resize (debounce 10ms)
+- Ajustement automatique si la bulle dépasse les bords de l'écran
+- Nettoyage intégré dans `cleanupAllVisualizations()`
+
+### 10. Migration vers pnpm dans les workflows GitHub
+
+**Fichiers modifiés** : `.github/workflows/release.yml`, `.github/workflows/package.yml`, `.github/workflows/changesets.yml`
+
+**Modifications** :
+- Ajout de l'étape "Setup pnpm" avec `pnpm/action-setup@v4`
+- Configuration de `setup-node` avec `cache: 'pnpm'`
+- Remplacement de `npm ci` par `pnpm install --frozen-lockfile`
+- Remplacement de toutes les commandes `npm run` par `pnpm run`
+
+**Bénéfices** :
+- Installation plus rapide grâce au cache pnpm
+- Utilisation cohérente avec le développement local (présence de `pnpm-lock.yaml`)
+- Meilleure gestion des dépendances avec pnpm
 
 ---
 
@@ -217,7 +321,7 @@ Organisation en fichiers séparés : `tests/category/test-name.js`
    - Fonctionnalités : Détection automatique des fichiers (.doc, .docx, .pdf, .odt, etc.)
    - Affichage : Compteurs de formats ouverts/fermés
 
-#### Catégorie "Langage & interface" (2 tests)
+#### Catégorie "Langage & interface" (7 tests)
 
 1. **`tests/langage/contrasts.js`**
    - Test : Les contrastes sont suffisants
@@ -225,7 +329,28 @@ Organisation en fichiers séparés : `tests/category/test-name.js`
    - Interface : Bouton "Analyser les contrastes (beta)", tableau de résultats interactif, contrôles WCAG level/auto-refresh
    - Validation : Manuelle (basée sur les résultats de l'analyse automatique)
 
-2. **`tests/langage/animations.js`**
+2. **`tests/langage/color-only.js`**
+   - Test : Aucune information n'est véhiculée uniquement par la couleur
+   - Validation : Manuelle uniquement
+
+3. **`tests/langage/media-alternatives.js`**
+   - Test : Les images, les vidéos et les fichiers audio ont une alternative textuelle
+   - Fonctionnalités : Bouton d'analyse "Analyser les alternatives textuelles (beta)" qui affiche les alternatives dans des bulles
+   - Validation : Manuelle (avec assistance de l'analyse visuelle)
+
+4. **`tests/langage/language-defined.js`**
+   - Test : La langue principale du site est bien définie
+   - Validation : Manuelle uniquement
+
+5. **`tests/langage/explicit-links.js`**
+   - Test : Les liens sont explicites
+   - Validation : Manuelle uniquement
+
+6. **`tests/langage/text-resize.js`**
+   - Test : Le contenu reste lisible lorsque la taille de caractères est portée à 200%
+   - Validation : Manuelle uniquement
+
+7. **`tests/langage/animations.js`**
    - Test : Les animations, clignotements et sons sont contrôlables
    - Validation : Manuelle uniquement
 
@@ -242,7 +367,8 @@ Organisation en fichiers séparés : `tests/category/test-name.js`
 
 3. **`tests/structuration/form-fields.js`**
    - Test : Chaque champ de formulaire est clairement associé à son intitulé
-   - Validation : Manuelle uniquement
+   - Fonctionnalités : Bouton d'analyse "Analyser les champs de formulaire (beta)" qui visualise les labels et inputs avec bordures et badges
+   - Validation : Manuelle (avec assistance de l'analyse visuelle)
 
 4. **`tests/structuration/download-info.js`**
    - Test : Les informations relatives aux fichiers proposés en téléchargement sont indiqués
@@ -300,7 +426,11 @@ function updateXxxStatus(testId, validationValue) {
 
 #### `utils/stats.js`
 - Gestion de l'objet `categories` (structure pour toutes les catégories)
-- Fonction `updateStats()` : calcule et affiche total, réussis, échoués
+- Mapping des tests (`testsMapping`) : associe chaque test à un numéro, nom et catégorie
+- Fonction `updateStats()` : calcule et affiche total, réussis, échoués, score, diagramme et tableau récapitulatif
+- Fonction `updateSummaryTable()` : génère le tableau récapitulatif des résultats
+- Fonction `updatePieChart()` : dessine le diagramme circulaire SVG
+- Fonction `updateCategoryProgress()` : met à jour les compteurs de progression par catégorie
 - Fonction `resetResults()` : remet à zéro tous les tests
 - Fonction `displayTest()` : ajoute dynamiquement un test (rarement utilisé maintenant)
 - Fonction `showError()` : affiche les erreurs
@@ -314,6 +444,12 @@ function updateXxxStatus(testId, validationValue) {
 
 #### `utils/cleanup.js`
 - `cleanupAllVisualizations()` : nettoie toutes les visualisations actives
+  - Visualisation clavier (keyboard)
+  - Mise en évidence des contrastes
+  - Visualisation des titres (headings)
+  - Visualisation des landmarks
+  - Visualisation des champs de formulaire (form-fields)
+  - Visualisation des alternatives textuelles (media-alternatives)
 - Appelée depuis `devtools.js` quand le panneau DevTools est caché (`panel.onHidden`)
 
 #### `tests/navigation/keyboard-visualization.js`
@@ -433,8 +569,8 @@ webext-dagnostic-flash-rgaa/
 ├── background.js              # Service worker
 ├── devtools.html              # Point d'entrée DevTools
 ├── devtools.js                # Création du panneau DevTools
-├── panel.html                 # Interface du panneau (HTML + CSS)
-├── panel.js                   # Orchestration principale
+├── panel.html                 # Interface du panneau (HTML + CSS) avec système d'onglets
+├── panel.js                   # Orchestration principale (gestion des onglets)
 ├── generate-icons.js          # Script de génération d'icônes
 ├── icons/                     # Icônes de l'extension
 │   ├── icon-16.png
@@ -536,6 +672,11 @@ webext-dagnostic-flash-rgaa/
 - ✅ Compteurs de progression par catégorie
 - ✅ Système de versioning avec Changesets
 - ✅ Packaging automatique Chrome et Firefox via GitHub Actions
+- ✅ Vue récapitulative en tableau des résultats (Critères / Résultat)
+- ✅ Système d'onglets (Audit / Scores)
+- ✅ Analyse des champs de formulaire avec visualisation des labels et inputs
+- ✅ Analyse des alternatives textuelles avec bulles d'information
+- ✅ Migration vers pnpm dans les workflows GitHub
 
 ---
 
@@ -595,6 +736,10 @@ Ces IDs permettent de mettre à jour le contenu dynamiquement si nécessaire.
 7. **Comptage des éléments cachés** : Correction pour compter TOUS les éléments cachés avant les filtres, exactement comme l'extension WCAG
 
 8. **Mise en évidence précise** : Implémentation du parcours inverse du DOM pour prioriser les éléments les plus spécifiques (texte) plutôt que leurs conteneurs
+
+9. **Gestion des erreurs dans les visualisations** : Amélioration de l'extraction des messages d'erreur depuis les objets `isException` dans les fonctions d'analyse (form-fields, media-alternatives) avec extraction de `value`, `description`, `message`, `toString()` et affichage de la stack trace si disponible
+
+10. **Erreurs de syntaxe dans le code injecté** : Correction des problèmes d'échappement des apostrophes dans les chaînes de caractères du code injecté (utilisation de `String.fromCharCode(39)` pour éviter les conflits d'échappement)
 
 ### Alignements avec l'extension WCAG Color Contrast Checker
 

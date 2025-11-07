@@ -1,9 +1,6 @@
 name: Changesets
 
 on:
-  pull_request:
-    branches:
-      - main
   push:
     branches:
       - main
@@ -38,7 +35,7 @@ jobs:
         with:
           # Ne pas publier, juste créer le PR de version
           publish: echo "Skipping publish - this is a browser extension"
-          version: pnpm run version-packages && pnpm run version
+          version: pnpm run version-all
           commit: 'chore: version packages'
           title: 'chore: version packages'
         env:
