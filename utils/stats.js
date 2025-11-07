@@ -22,6 +22,30 @@ const categories = {
   }
 };
 
+// Mapping des tests avec leurs numéros et noms
+const testsMapping = {
+  // Navigation & utilisation
+  'responsive-design': { number: 1, nameKey: 'testResponsiveDesignNameForStats', category: 'navigation' },
+  'keyboard-navigation': { number: 2, nameKey: 'testKeyboardNavigationNameForStats', category: 'navigation' },
+  'two-navigation-means': { number: 3, nameKey: 'testTwoNavigationMeansNameForStats', category: 'navigation' },
+  'downloadable-files': { number: 4, nameKey: 'testDownloadableFilesNameForStats', category: 'navigation' },
+  
+  // Langage & interface
+  'contrasts': { number: 5, nameKey: 'testContrastsNameForStats', category: 'langage' },
+  'color-only': { number: 6, nameKey: 'testColorOnlyNameForStats', category: 'langage' },
+  'media-alternatives': { number: 7, nameKey: 'testMediaAlternativesNameForStats', category: 'langage' },
+  'language-defined': { number: 8, nameKey: 'testLanguageDefinedNameForStats', category: 'langage' },
+  'explicit-links': { number: 9, nameKey: 'testExplicitLinksNameForStats', category: 'langage' },
+  'text-resize': { number: 10, nameKey: 'testTextResizeNameForStats', category: 'langage' },
+  'animations': { number: 11, nameKey: 'testAnimationsNameForStats', category: 'langage' },
+  
+  // Structuration de l'information
+  'page-title': { number: 12, nameKey: 'testPageTitleNameForStats', category: 'structuration' },
+  'headings-hierarchy': { number: 13, nameKey: 'testHeadingsHierarchyNameForStats', category: 'structuration' },
+  'form-fields': { number: 14, nameKey: 'testFormFieldsNameForStats', category: 'structuration' },
+  'download-info': { number: 15, nameKey: 'testDownloadInfoNameForStats', category: 'structuration' }
+};
+
 // Mettre à jour les statistiques
 function updateStats() {
   const TOTAL_CRITERIA = 15; // Nombre total de critères RGAA
@@ -101,6 +125,9 @@ function updateStats() {
   
   // Mettre à jour les compteurs de progression par catégorie
   updateCategoryProgress();
+  
+  // Mettre à jour le tableau récapitulatif
+  updateSummaryTable();
 }
 
 // Mettre à jour le diagramme circulaire
@@ -274,6 +301,8 @@ function resetResults() {
     categories[categoryId].tests = [];
   });
   updateStats();
+  // Initialiser le tableau récapitulatif même s'il n'y a pas de tests
+  updateSummaryTable();
 }
 
 // Afficher un test dans une catégorie
@@ -308,5 +337,85 @@ function showError(message) {
     description: message,
     status: 'failed'
   });
+}
+
+// Mettre à jour le tableau récapitulatif
+function updateSummaryTable() {
+  const tableContainer = document.getElementById('summary-table-container');
+  if (!tableContainer) return;
+  
+  // Créer le tableau
+  const table = document.createElement('table');
+  table.className = 'summary-table';
+  
+  // Créer l'en-tête
+  const thead = document.createElement('thead');
+  const headerRow = document.createElement('tr');
+  
+  // En-tête : Critères
+  const thCriteria = document.createElement('th');
+  thCriteria.className = 'summary-header-criteria';
+  thCriteria.textContent = 'Critères';
+  headerRow.appendChild(thCriteria);
+  
+  // En-tête : Résultat
+  const thResult = document.createElement('th');
+  thResult.className = 'summary-header-result';
+  thResult.textContent = 'Résultat';
+  headerRow.appendChild(thResult);
+  
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+  
+  // Créer le corps du tableau avec une ligne par test
+  const tbody = document.createElement('tbody');
+  
+  Object.keys(testsMapping).forEach(testId => {
+    const testInfo = testsMapping[testId];
+    const row = document.createElement('tr');
+    
+    // Cellule : Numéro et nom du test
+    const tdCriteria = document.createElement('td');
+    tdCriteria.className = 'summary-criteria';
+    tdCriteria.textContent = `${testInfo.number}. ${t(testInfo.nameKey)}`;
+    row.appendChild(tdCriteria);
+    
+    // Cellule : Résultat
+    const tdResult = document.createElement('td');
+    tdResult.className = 'summary-result';
+    
+    // Chercher le test dans la catégorie correspondante
+    const categoryTests = categories[testInfo.category].tests;
+    const expectedName = t(testInfo.nameKey);
+    const test = categoryTests.find(t => t.name === expectedName);
+    
+    if (test) {
+      if (test.status === 'passed') {
+        tdResult.textContent = 'OK';
+        tdResult.className += ' summary-ok';
+      } else if (test.status === 'failed') {
+        tdResult.textContent = 'KO';
+        tdResult.className += ' summary-ko';
+      } else if (test.status === 'not-applicable') {
+        tdResult.textContent = 'N/A';
+        tdResult.className += ' summary-na';
+      } else {
+        tdResult.textContent = '-';
+        tdResult.className += ' summary-pending';
+      }
+    } else {
+      tdResult.textContent = '-';
+      tdResult.className += ' summary-pending';
+    }
+    
+    row.appendChild(tdResult);
+    tbody.appendChild(row);
+  });
+  
+  table.appendChild(tbody);
+  
+  // Remplacer le contenu du conteneur
+  tableContainer.innerHTML = '';
+  tableContainer.appendChild(table);
 }
 
