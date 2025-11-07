@@ -1,6 +1,6 @@
 {
   "name": "webext-dagnostic-flash-rgaa",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Extension navigateur pour réaliser les diagnostics flash d'accessibilité",
   "type": "module",
   "scripts": {
