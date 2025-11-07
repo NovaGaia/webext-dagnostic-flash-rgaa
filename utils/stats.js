@@ -82,42 +82,57 @@ function updateStats() {
     score = 0;
   }
   
+  // Mettre à jour les stats dans l'onglet Audit
   const totalEl = document.getElementById('totalTests');
   const passedEl = document.getElementById('passedTests');
   const failedEl = document.getElementById('failedTests');
   const notApplicableEl = document.getElementById('notApplicableTests');
   const scoreEl = document.getElementById('scoreValue');
   
-  if (totalEl) {
-    totalEl.textContent = total;
-  } else {
-    console.warn(t('warningTotalTestsNotFound'));
-  }
-  if (passedEl) {
-    passedEl.textContent = passed;
-  } else {
-    console.warn(t('warningPassedTestsNotFound'));
-  }
-  if (failedEl) {
-    failedEl.textContent = failed;
-  } else {
-    console.warn(t('warningFailedTestsNotFound'));
-  }
-  if (notApplicableEl) {
-    notApplicableEl.textContent = notApplicable;
-  }
-  if (scoreEl) {
-    scoreEl.textContent = score;
-    // Changer la couleur selon le score
-    if (score >= 90) {
-      scoreEl.style.color = '#4caf50'; // Vert pour excellent
-    } else if (score >= 75) {
-      scoreEl.style.color = '#8bc34a'; // Vert clair pour bon
-    } else if (score >= 50) {
-      scoreEl.style.color = '#ff9800'; // Orange pour moyen
-    } else {
-      scoreEl.style.color = '#f44336'; // Rouge pour faible
+  // Mettre à jour les stats dans l'onglet Scores
+  const totalElScores = document.getElementById('totalTestsScores');
+  const passedElScores = document.getElementById('passedTestsScores');
+  const failedElScores = document.getElementById('failedTestsScores');
+  const notApplicableElScores = document.getElementById('notApplicableTestsScores');
+  const scoreElScores = document.getElementById('scoreValueScores');
+  
+  const updateStatElement = (el, value) => {
+    if (el) {
+      el.textContent = value;
     }
+  };
+  
+  const updateScoreElement = (el, score) => {
+    if (el) {
+      el.textContent = score;
+      // Changer la couleur selon le score
+      if (score >= 90) {
+        el.style.color = '#4caf50'; // Vert pour excellent
+      } else if (score >= 75) {
+        el.style.color = '#8bc34a'; // Vert clair pour bon
+      } else if (score >= 50) {
+        el.style.color = '#ff9800'; // Orange pour moyen
+      } else {
+        el.style.color = '#f44336'; // Rouge pour faible
+      }
+    }
+  };
+  
+  updateStatElement(totalEl, total);
+  updateStatElement(passedEl, passed);
+  updateStatElement(failedEl, failed);
+  updateStatElement(notApplicableEl, notApplicable);
+  updateScoreElement(scoreEl, score);
+  
+  // Mettre à jour aussi dans l'onglet Scores
+  updateStatElement(totalElScores, total);
+  updateStatElement(passedElScores, passed);
+  updateStatElement(failedElScores, failed);
+  updateStatElement(notApplicableElScores, notApplicable);
+  updateScoreElement(scoreElScores, score);
+  
+  if (!totalEl && !totalElScores) {
+    console.warn(t('warningTotalTestsNotFound'));
   }
   
   // Mettre à jour le diagramme circulaire

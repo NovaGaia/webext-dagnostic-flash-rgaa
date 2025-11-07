@@ -62,6 +62,30 @@ function cleanupAllVisualizations() {
         delete window._rgaaLandmarksUpdate;
       }
       
+      // Nettoyer la visualisation des champs de formulaire
+      const formFieldsOverlay = document.getElementById('rgaa-form-fields-overlay');
+      if (formFieldsOverlay) formFieldsOverlay.remove();
+      
+      const labels = document.querySelectorAll('[data-rgaa-label-border]');
+      labels.forEach(l => {
+        l.style.outline = '';
+        l.style.outlineOffset = '';
+        l.removeAttribute('data-rgaa-label-border');
+      });
+      
+      const inputs = document.querySelectorAll('[data-rgaa-input-border]');
+      inputs.forEach(i => {
+        i.style.outline = '';
+        i.style.outlineOffset = '';
+        i.removeAttribute('data-rgaa-input-border');
+      });
+      
+      if (window._rgaaFormFieldsUpdate) {
+        window.removeEventListener('scroll', window._rgaaFormFieldsUpdate, true);
+        window.removeEventListener('resize', window._rgaaFormFieldsUpdate);
+        delete window._rgaaFormFieldsUpdate;
+      }
+      
       return { cleaned: true };
     })()
   `, (result, isException) => {

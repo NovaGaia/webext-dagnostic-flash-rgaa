@@ -1039,6 +1039,56 @@
       color: #999;
       background: #fafafa;
     }
+    
+    /* Onglets */
+    .tabs {
+      margin-bottom: 20px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+    
+    .tabs-list {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      gap: 0;
+    }
+    
+    .tab-item {
+      margin: 0;
+    }
+    
+    .tab-button {
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: -2px;
+    }
+    
+    .tab-button:hover {
+      color: #1976d2;
+      background: #f5f5f5;
+    }
+    
+    .tab-button.active {
+      color: #1976d2;
+      border-bottom-color: #1976d2;
+      background: transparent;
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -1048,9 +1098,20 @@
       <span id="version-display" style="font-size: 11px; color: #666; font-weight: normal;">v<span id="version-number">-</span></span>
     </div>
     
-    <button class="button secondary" id="resetBtn" style="margin-bottom: 20px;" data-i18n="statsReset">Réinitialiser tous les tests</button>
+    <!-- Onglets -->
+    <div class="tabs">
+      <ul class="tabs-list">
+        <li class="tab-item">
+          <button class="tab-button active" data-tab="audit">Audit</button>
+        </li>
+        <li class="tab-item">
+          <button class="tab-button" data-tab="scores">Scores</button>
+        </li>
+      </ul>
+    </div>
     
-    <div class="categories" id="categories">
+    <!-- Onglet Audit -->
+    <div class="tab-content active" id="tab-audit">
       <div class="stats" id="stats">
         <div class="stat">
           <div class="stat-value" id="totalTests">0</div>
@@ -1074,6 +1135,75 @@
         </div>
       </div>
       
+      <button class="button secondary" id="resetBtn" style="margin-bottom: 20px;" data-i18n="statsReset">Réinitialiser tous les tests</button>
+      
+      <div class="categories" id="categories">
+        <div class="category" data-category="navigation">
+          <div class="category-header" data-category-toggle="navigation">
+            <span>
+              <span class="category-icon">🧭</span>
+              <span data-i18n="categoryNavigation">Navigation & utilisation</span>
+            </span>
+            <span class="category-arrow">▶</span>
+          </div>
+          <div class="category-content" id="category-navigation">
+            <div class="empty-state" data-i18n="emptyState">Aucun test effectué pour cette catégorie</div>
+          </div>
+        </div>
+        
+        <div class="category" data-category="langage">
+          <div class="category-header" data-category-toggle="langage">
+            <span>
+              <span class="category-icon">🌐</span>
+              <span data-i18n="categoryLangage">Langage & interface</span>
+            </span>
+            <span class="category-arrow">▶</span>
+          </div>
+          <div class="category-content" id="category-langage">
+            <div class="empty-state" data-i18n="emptyState">Aucun test effectué pour cette catégorie</div>
+          </div>
+        </div>
+        
+        <div class="category" data-category="structuration">
+          <div class="category-header" data-category-toggle="structuration">
+            <span>
+              <span class="category-icon">📋</span>
+              <span data-i18n="categoryStructuration">Structuration de l'information</span>
+            </span>
+            <span class="category-arrow">▶</span>
+          </div>
+          <div class="category-content" id="category-structuration">
+            <div class="empty-state" data-i18n="emptyState">Aucun test effectué pour cette catégorie</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Onglet Scores -->
+    <div class="tab-content" id="tab-scores">
+      <div class="stats" id="stats-scores">
+        <div class="stat">
+          <div class="stat-value" id="totalTestsScores">0</div>
+          <div class="stat-label" data-i18n="statsTotal">Total</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="passedTestsScores" style="color: #4caf50;">0</div>
+          <div class="stat-label" data-i18n="statsPassed">Réussis</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="failedTestsScores" style="color: #f44336;">0</div>
+          <div class="stat-label" data-i18n="statsFailed">Échoués</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="notApplicableTestsScores" style="color: #9e9e9e;">0</div>
+          <div class="stat-label" data-i18n="statsNotApplicable">Non applicables</div>
+        </div>
+        <div class="stat" style="border-left: 2px solid #e0e0e0; padding-left: 15px; margin-left: 10px;">
+          <div class="stat-value" id="scoreValueScores" style="color: #1976d2; font-size: 24px; font-weight: bold;">0</div>
+          <div class="stat-label" data-i18n="statsScore">Score / 100</div>
+        </div>
+      </div>
+      
       <div class="pie-chart-container" style="margin-bottom: 15px; padding: 15px; background: #f5f5f5; border-radius: 4px; text-align: center;">
         <div style="font-size: 13px; font-weight: 600; margin-bottom: 10px;" data-i18n="statsDistribution">Répartition des résultats</div>
         <svg id="pieChart" width="200" height="200" style="display: block; margin: 0 auto;">
@@ -1085,45 +1215,6 @@
       </div>
       
       <div id="summary-table-container" style="margin-bottom: 20px; overflow-x: auto;"></div>
-      
-      <div class="category" data-category="navigation">
-        <div class="category-header" data-category-toggle="navigation">
-          <span>
-            <span class="category-icon">🧭</span>
-            <span data-i18n="categoryNavigation">Navigation & utilisation</span>
-          </span>
-          <span class="category-arrow">▶</span>
-        </div>
-        <div class="category-content" id="category-navigation">
-          <div class="empty-state" data-i18n="emptyState">Aucun test effectué pour cette catégorie</div>
-        </div>
-      </div>
-      
-      <div class="category" data-category="langage">
-        <div class="category-header" data-category-toggle="langage">
-          <span>
-            <span class="category-icon">🌐</span>
-            <span data-i18n="categoryLangage">Langage & interface</span>
-          </span>
-          <span class="category-arrow">▶</span>
-        </div>
-        <div class="category-content" id="category-langage">
-          <div class="empty-state" data-i18n="emptyState">Aucun test effectué pour cette catégorie</div>
-        </div>
-      </div>
-      
-      <div class="category" data-category="structuration">
-        <div class="category-header" data-category-toggle="structuration">
-          <span>
-            <span class="category-icon">📋</span>
-            <span data-i18n="categoryStructuration">Structuration de l'information</span>
-          </span>
-          <span class="category-arrow">▶</span>
-        </div>
-        <div class="category-content" id="category-structuration">
-          <div class="empty-state" data-i18n="emptyState">Aucun test effectué pour cette catégorie</div>
-        </div>
-      </div>
     </div>
   </div>
   

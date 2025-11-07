@@ -169,10 +169,31 @@ function initVersion() {
   }
 }
 
+// Initialiser les onglets
+function initTabs() {
+  const tabButtons = document.querySelectorAll('.tab-button');
+  const tabContents = document.querySelectorAll('.tab-content');
+  
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const targetTab = button.getAttribute('data-tab');
+      
+      // Désactiver tous les onglets
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      tabContents.forEach(content => content.classList.remove('active'));
+      
+      // Activer l'onglet sélectionné
+      button.classList.add('active');
+      document.getElementById(`tab-${targetTab}`).classList.add('active');
+    });
+  });
+}
+
 // Initialisation
 initTranslations();
 initCategories();
 initPopinEvents(); // Initialiser la popin
 initVersion(); // Afficher la version
+initTabs(); // Initialiser les onglets
 initTests(); // Lancer les tests automatiquement
 console.log(t('panelInitialized'));
