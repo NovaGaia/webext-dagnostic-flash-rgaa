@@ -127,15 +127,15 @@ Extension navigateur (Chrome/Firefox) pour réaliser le diagnostic flash d'acces
 - **Utilisation de pnpm** : Tous les workflows GitHub utilisent pnpm au lieu de npm
 
 **Scripts disponibles** :
-- `pppnpm run changeset` : Créer un nouveau changeset
-- `pppnpm run version-packages` : Versionner les packages (via Changesets)
-- `pppnpm run version` : Synchroniser les versions
-- `pppnpm run package:chrome` : Créer le package Chrome
-- `pppnpm run package:firefox` : Créer le package Firefox
-- `pppnpm run package` : Créer les deux packages
+- `ppppnpm run changeset` : Créer un nouveau changeset
+- `ppppnpm run version-packages` : Versionner les packages (via Changesets)
+- `ppppnpm run version` : Synchroniser les versions
+- `ppppnpm run package:chrome` : Créer le package Chrome
+- `ppppnpm run package:firefox` : Créer le package Firefox
+- `ppppnpm run package` : Créer les deux packages
 
 **Workflow de release** :
-1. Développement + création de changeset (`pppnpm run changeset`)
+1. Développement + création de changeset (`ppppnpm run changeset`)
 2. PR avec changements + changeset → Merge dans `main`
 3. GitHub Actions crée automatiquement un PR "chore: version packages"
 4. Merge du PR de version → Création automatique :
@@ -239,7 +239,7 @@ Extension navigateur (Chrome/Firefox) pour réaliser le diagnostic flash d'acces
 - Ajout de l'étape "Setup pnpm" avec `pnpm/action-setup@v4`
 - Configuration de `setup-node` avec `cache: 'pnpm'`
 - Remplacement de `pnpm install --frozen-lockfile` par `pnpm install --frozen-lockfile`
-- Remplacement de toutes les commandes `ppnpm run` par `pppnpm run`
+- Remplacement de toutes les commandes `pppnpm run` par `ppppnpm run`
 - Création du script `version-all` dans `package.json` pour combiner `changeset version` et `sync-version.js`
 - Correction du workflow `changesets.yml` : suppression du déclenchement sur `pull_request` (uniquement `push` vers `main`)
 

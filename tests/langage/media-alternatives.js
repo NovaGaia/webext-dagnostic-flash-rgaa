@@ -127,13 +127,97 @@ function showMediaAlternativesVisualization(testId) {
         
         // Fonction pour obtenir l'alternative textuelle d'un élément
         const getAlternativeText = (element) => {
+          // Vérifier si l'élément est décoratif (pas besoin d'alternative)
+          const role = element.getAttribute('role');
+          const ariaHidden = element.getAttribute('aria-hidden');
+          
+          if (role === 'presentation' || role === 'none' || ariaHidden === 'true') {
+            return { text: 'Décoratif', method: 'role=' + role + (ariaHidden === 'true' ? ' + aria-hidden=true' : ''), decorative: true };
+          }
+          
           const tagName = element.tagName.toLowerCase();
+          
+          // Fonction helper pour récupérer le nom accessible d'un élément
+          // Suit les règles de calcul du nom accessible selon ARIA
+          // Note: title n'est PAS inclus dans le calcul du nom accessible pour aria-labelledby
+          const getAccessibleName = (element) => {
+            if (!element) return null;
+            
+            // 1. Vérifier aria-label (priorité la plus haute)
+            const ariaLabel = element.getAttribute('aria-label');
+            if (ariaLabel && ariaLabel.trim()) {
+              return ariaLabel.trim();
+            }
+            
+            // 2. Vérifier aria-labelledby (récursion)
+            const ariaLabelledBy = element.getAttribute('aria-labelledby');
+            if (ariaLabelledBy) {
+              const ids = ariaLabelledBy.split(/\\s+/).map(id => id.trim()).filter(id => id);
+              const texts = [];
+              ids.forEach(id => {
+                const refElement = document.getElementById(id);
+                if (refElement) {
+                  const refName = getAccessibleName(refElement);
+                  if (refName) {
+                    texts.push(refName);
+                  }
+                }
+              });
+              if (texts.length > 0) {
+                return texts.join(' ');
+              }
+            }
+            
+            // 3. Vérifier alt (pour les images)
+            if (element.tagName && element.tagName.toLowerCase() === 'img') {
+              const alt = element.getAttribute('alt');
+              if (alt !== null && alt.trim()) {
+                return alt.trim();
+              }
+            }
+            
+            // 4. Vérifier textContent (contenu textuel visible)
+            if (element.textContent && element.textContent.trim()) {
+              return element.textContent.trim();
+            }
+            
+            // title n'est PAS utilisé dans le calcul du nom accessible pour aria-labelledby
+            // car son support par les technologies d'assistance est limité et incohérent
+            
+            return null;
+          };
+          
+          // Fonction helper pour récupérer le texte via aria-labelledby
+          const getAriaLabelledByText = (element) => {
+            const labelledBy = element.getAttribute('aria-labelledby');
+            if (labelledBy) {
+              const ids = labelledBy.split(/\\s+/).map(id => id.trim()).filter(id => id);
+              const texts = [];
+              ids.forEach(id => {
+                const labelElement = document.getElementById(id);
+                if (labelElement) {
+                  const accessibleName = getAccessibleName(labelElement);
+                  if (accessibleName) {
+                    texts.push(accessibleName);
+                  }
+                }
+              });
+              if (texts.length > 0) {
+                return { text: texts.join(' '), method: 'aria-labelledby' };
+              }
+            }
+            return null;
+          };
           
           // Pour les images
           if (tagName === 'img') {
             const alt = element.getAttribute('alt');
             if (alt !== null) {
               return { text: alt, method: 'alt' };
+            }
+            const ariaLabelledBy = getAriaLabelledByText(element);
+            if (ariaLabelledBy) {
+              return ariaLabelledBy;
             }
             const ariaLabel = element.getAttribute('aria-label');
             if (ariaLabel) {
@@ -148,6 +232,10 @@ function showMediaAlternativesVisualization(testId) {
           
           // Pour les SVG
           if (tagName === 'svg') {
+            const ariaLabelledBy = getAriaLabelledByText(element);
+            if (ariaLabelledBy) {
+              return ariaLabelledBy;
+            }
             const ariaLabel = element.getAttribute('aria-label');
             if (ariaLabel) {
               return { text: ariaLabel, method: 'aria-label' };
@@ -162,7 +250,6 @@ function showMediaAlternativesVisualization(testId) {
               return { text: svgTitle.textContent.trim(), method: 'svg-title' };
             }
             // Vérifier si le SVG a un rôle img avec aria-label
-            const role = element.getAttribute('role');
             if (role === 'img') {
               const ariaLabelRole = element.getAttribute('aria-label');
               if (ariaLabelRole) {
@@ -174,6 +261,10 @@ function showMediaAlternativesVisualization(testId) {
           
           // Pour les vidéos et audio
           if (tagName === 'video' || tagName === 'audio') {
+            const ariaLabelledBy = getAriaLabelledByText(element);
+            if (ariaLabelledBy) {
+              return ariaLabelledBy;
+            }
             const ariaLabel = element.getAttribute('aria-label');
             if (ariaLabel) {
               return { text: ariaLabel, method: 'aria-label' };
@@ -203,27 +294,34 @@ function showMediaAlternativesVisualization(testId) {
             
             const altInfo = getAlternativeText(element);
             
-            // Couleur de la bordure selon si l'alternative existe ou non
-            const borderColor = altInfo.text ? '#4caf50' : '#f44336';
+            // Couleur de la bordure selon si l'alternative existe ou si c'est décoratif
+            let borderColor = '#f44336'; // Rouge par défaut (pas d'alternative)
+            if (altInfo.decorative) {
+              borderColor = '#4caf50'; // Vert (décoratif = OK)
+            } else if (altInfo.text) {
+              borderColor = '#4caf50'; // Vert (alternative présente)
+            }
             
             // Ajouter une bordure autour de l'élément
             element.style.setProperty('outline', '2px solid ' + borderColor, 'important');
             element.style.setProperty('outline-offset', '2px', 'important');
             element.setAttribute('data-rgaa-media-border', 'true');
             
-            // Créer une bulle avec l'alternative textuelle
-            if (altInfo.text) {
+            // Créer une bulle avec l'alternative textuelle ou l'info décorative
+            if (altInfo.text || altInfo.decorative) {
               const tooltip = document.createElement('div');
               tooltip.className = 'rgaa-media-tooltip';
               
               // Limiter la longueur du texte pour l'affichage
-              const displayText = altInfo.text.length > 100 
-                ? altInfo.text.substring(0, 100) + '...' 
-                : altInfo.text;
+              const displayText = altInfo.decorative 
+                ? altInfo.text 
+                : (altInfo.text.length > 100 
+                    ? altInfo.text.substring(0, 100) + '...' 
+                    : altInfo.text);
               
               tooltip.innerHTML = '<div class="rgaa-media-tooltip-content">' +
                 '<div class="rgaa-media-tooltip-text">' + displayText.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>' +
-                (altInfo.method ? '<div class="rgaa-media-tooltip-method">Méthode: ' + altInfo.method + '</div>' : '') +
+                (altInfo.method ? '<div class="rgaa-media-tooltip-method">Méthode: ' + altInfo.method.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>' : '') +
                 '</div>';
               
               // Positionner la bulle au-dessus de l'élément
