@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.2
+
+### Patch Changes
+
+- 13f6167: Add more criterias on image alternative text detection and some Cursor only changes.
+
 ## 1.0.1
 
 ### Patch Changes
