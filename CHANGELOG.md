@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.3
+
+### Patch Changes
+
+- a09ffa1: Add more heroicons
+- 0a26bb2: Replace emojis by heroicons
+- 3c2cb4b: Responsive, Darkmode, fast open on right-clic
+- 102ecc6: Export Notes as PNG
+- 301d11e: Exports diagramme as PNG
+
 ## 1.0.2
 
 ### Patch Changes
