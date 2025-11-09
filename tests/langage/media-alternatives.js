@@ -458,7 +458,17 @@ function cleanupMediaAlternativesVisualization() {
     })()
   `, (result, isException) => {
     if (isException) {
-      console.error('Erreur lors du nettoyage:', isException);
+      // Extraire le message d'erreur de manière plus descriptive
+      let errorMessage = 'Erreur inconnue';
+      if (typeof isException === 'string') {
+        errorMessage = isException;
+      } else if (isException && typeof isException === 'object') {
+        errorMessage = isException.value || isException.description || isException.message || isException.toString() || JSON.stringify(isException);
+      }
+      console.error('Erreur lors du nettoyage:', errorMessage);
+      if (isException && isException.stack) {
+        console.error('Stack trace:', isException.stack);
+      }
     }
   });
 }

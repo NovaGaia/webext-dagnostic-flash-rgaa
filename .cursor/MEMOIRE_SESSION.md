@@ -160,6 +160,43 @@ Extension navigateur (Chrome/Firefox) pour réaliser le diagnostic flash d'acces
 - Styles CSS pour les couleurs et la mise en forme
 - Une ligne par test (15 tests au total)
 
+### 6.1. Export du diagramme circulaire en PNG
+
+**Fichiers modifiés** : `utils/stats.js`, `panel.html`, `panel.js`, `utils/i18n.js`
+
+**Fonctionnalité ajoutée** : Bouton d'export pour télécharger le diagramme circulaire :
+- **Télécharger (PNG transparent)** : Télécharge le diagramme avec la légende au format PNG avec fond transparent
+
+**Implémentation** :
+- **Légende incluse dans l'export** :
+  - La légende est maintenant incluse dans l'export avec les pourcentages et nombres de critères
+  - Format : `{Label}: {nombre} ({pourcentage}%)` (ex: "Réussis: 5 (33%)")
+  - Les données de la légende sont stockées dans l'attribut `data-legend` du SVG
+- **Fonction `createExportSVG()`** :
+  - Crée un SVG complet avec diagramme et légende
+  - Paramètre `includeBackground` pour choisir le fond (false = transparent pour le téléchargement)
+  - La légende est rendue en SVG avec carrés de couleur et texte
+- **Fonction `downloadChartAsPNG()`** :
+  - Télécharge le diagramme avec légende au format PNG transparent
+  - Affiche un message de succès sur le bouton
+- **Affichage de la légende** :
+  - La légende dans l'interface affiche maintenant les pourcentages : `{Label}: {nombre} ({pourcentage}%)`
+- Gestion des erreurs avec affichage visuel sur les boutons
+
+**Traductions ajoutées** :
+- `statsDownloadChart` : "Télécharger (PNG transparent)" / "Download (transparent PNG)"
+- `statsDownloadChartSuccess` : "Diagramme téléchargé !" / "Chart downloaded!"
+- `statsExportChartError` : "Erreur lors de l'export du diagramme" / "Error exporting chart"
+
+**Améliorations de l'interface** :
+- **Bouton avec pictogramme** : Le bouton d'export utilise maintenant une icône (📥) au lieu de texte
+- **Messages de feedback** : Les messages de succès/erreur sont affichés dans l'attribut `title` du bouton (tooltip) au lieu de modifier le texte
+
+**Corrections apportées** :
+- **Gestion d'erreur améliorée** : Les erreurs sont maintenant formatées correctement au lieu d'afficher `[object Object]` ou `[object DOMException]`
+- **Gestion d'erreur dans le nettoyage** : Correction de la gestion d'erreur dans `cleanupMediaAlternativesVisualization()` pour afficher des messages d'erreur descriptifs
+- **Suppression du copier-coller** : La fonctionnalité de copier-coller a été supprimée car elle était problématique dans les DevTools (permissions policy). Seul le téléchargement est disponible.
+
 ### 7. Système d'onglets (Audit / Scores)
 
 **Fichiers modifiés** : `panel.html`, `panel.js`, `utils/stats.js`
@@ -721,6 +758,7 @@ webext-dagnostic-flash-rgaa/
 - ✅ Analyse des champs de formulaire avec visualisation des labels et inputs
 - ✅ Analyse des alternatives textuelles avec bulles d'information
 - ✅ Migration vers pnpm dans les workflows GitHub
+- ✅ Export du diagramme circulaire en PNG (copié dans le presse-papiers)
 
 ---
 

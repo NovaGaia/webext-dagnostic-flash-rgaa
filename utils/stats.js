@@ -241,6 +241,17 @@ function updatePieChart(passed, failed, notApplicable) {
     { label: t('statsNotApplicable'), color: colors.notApplicable, count: notApplicable }
   ].filter(item => item.count > 0);
   
+  // Stocker les données de la légende pour l'export
+  svg.setAttribute('data-legend', JSON.stringify({
+    items: legendItems.map(item => ({
+      label: item.label,
+      color: item.color,
+      count: item.count,
+      percentage: total > 0 ? Math.round((item.count / total) * 100) : 0
+    })),
+    total: total
+  }));
+  
   legendItems.forEach(item => {
     const legendItem = document.createElement('div');
     legendItem.className = 'pie-chart-legend-item';
@@ -249,8 +260,9 @@ function updatePieChart(passed, failed, notApplicable) {
     colorBox.className = 'pie-chart-legend-color';
     colorBox.style.backgroundColor = item.color;
     
+    const percentage = total > 0 ? Math.round((item.count / total) * 100) : 0;
     const label = document.createElement('span');
-    label.textContent = `${item.label}: ${item.count}`;
+    label.textContent = `${item.label}: ${item.count} (${percentage}%)`;
     
     legendItem.appendChild(colorBox);
     legendItem.appendChild(label);
@@ -434,3 +446,186 @@ function updateSummaryTable() {
   tableContainer.appendChild(table);
 }
 
+// Créer un SVG complet avec diagramme et légende pour l'export
+function createExportSVG(includeBackground = false) {
+  const svg = document.getElementById('pieChart');
+  const legend = document.getElementById('pieChartLegend');
+  if (!svg) return null;
+  
+  // Récupérer les données de la légende
+  const legendDataAttr = svg.getAttribute('data-legend');
+  let legendData = null;
+  if (legendDataAttr) {
+    try {
+      legendData = JSON.parse(legendDataAttr);
+    } catch (e) {
+      console.error('Erreur lors du parsing de la légende', e);
+    }
+  }
+  
+  // Cloner le SVG du diagramme
+  const clonedSvg = svg.cloneNode(true);
+  
+  // S'assurer que le SVG a les attributs nécessaires
+  if (!clonedSvg.getAttribute('xmlns')) {
+    clonedSvg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  }
+  
+  // Dimensions
+  const svgWidth = parseInt(svg.getAttribute('width') || 200);
+  const svgHeight = parseInt(svg.getAttribute('height') || 200);
+  const legendHeight = legendData ? 60 : 0;
+  const totalHeight = svgHeight + legendHeight + 20; // 20px de marge
+  
+  // Créer un nouveau SVG conteneur
+  const exportSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  exportSvg.setAttribute('width', svgWidth);
+  exportSvg.setAttribute('height', totalHeight);
+  exportSvg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  
+  // Ajouter un fond blanc si demandé
+  if (includeBackground) {
+    const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    bg.setAttribute('width', '100%');
+    bg.setAttribute('height', '100%');
+    bg.setAttribute('fill', '#ffffff');
+    exportSvg.appendChild(bg);
+  }
+  
+  // Ajouter le diagramme (copier les enfants du SVG cloné)
+  const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  while (clonedSvg.firstChild) {
+    g.appendChild(clonedSvg.firstChild);
+  }
+  exportSvg.appendChild(g);
+  
+  // Ajouter la légende si disponible
+  if (legendData && legendData.items && legendData.items.length > 0) {
+    const legendGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    legendGroup.setAttribute('transform', `translate(0, ${svgHeight + 10})`);
+    
+    let xOffset = 10;
+    const itemHeight = 20;
+    const itemSpacing = 5;
+    
+    legendData.items.forEach((item, index) => {
+      const yPos = index * (itemHeight + itemSpacing);
+      
+      // Carré de couleur
+      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      rect.setAttribute('x', xOffset);
+      rect.setAttribute('y', yPos);
+      rect.setAttribute('width', '12');
+      rect.setAttribute('height', '12');
+      rect.setAttribute('fill', item.color);
+      legendGroup.appendChild(rect);
+      
+      // Texte de la légende
+      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.setAttribute('x', xOffset + 18);
+      text.setAttribute('y', yPos + 9);
+      text.setAttribute('font-size', '11');
+      text.setAttribute('fill', '#333');
+      text.textContent = `${item.label}: ${item.count} (${item.percentage}%)`;
+      legendGroup.appendChild(text);
+    });
+    
+    exportSvg.appendChild(legendGroup);
+  }
+  
+  return exportSvg;
+}
+
+// Exporter le diagramme circulaire en PNG et le télécharger (fond transparent)
+async function downloadChartAsPNG() {
+  const exportSvg = createExportSVG(false); // Fond transparent
+  if (!exportSvg) {
+    console.error(t('statsExportChartError'));
+    return;
+  }
+  
+  try {
+    const svg = document.getElementById('pieChart');
+    const svgWidth = parseInt(svg.getAttribute('width') || 200);
+    const svgHeight = parseInt(svg.getAttribute('height') || 200);
+    const legendDataAttr = svg.getAttribute('data-legend');
+    let legendData = null;
+    if (legendDataAttr) {
+      try {
+        legendData = JSON.parse(legendDataAttr);
+      } catch (e) {}
+    }
+    const legendHeight = legendData ? 60 : 0;
+    const totalHeight = svgHeight + legendHeight + 20;
+    
+    // Créer un canvas pour la conversion
+    const canvas = document.createElement('canvas');
+    canvas.width = svgWidth;
+    canvas.height = totalHeight;
+    const ctx = canvas.getContext('2d');
+    
+    // Convertir le SVG en image
+    const svgData = new XMLSerializer().serializeToString(exportSvg);
+    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svgBlob);
+    
+    const img = new Image();
+    
+    await new Promise((resolve, reject) => {
+      img.onload = () => {
+        // Fond transparent (pas de fillRect)
+        ctx.drawImage(img, 0, 0);
+        URL.revokeObjectURL(url);
+        resolve();
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error('Erreur lors du chargement de l\'image SVG'));
+      };
+      img.src = url;
+    });
+    
+    // Convertir le canvas en blob PNG
+    canvas.toBlob((blob) => {
+      if (!blob) {
+        console.error(t('statsExportChartError'));
+        return;
+      }
+      
+      // Télécharger le fichier
+      const downloadUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = 'diagramme-rgaa.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(downloadUrl);
+      
+        // Afficher un message de succès (mettre à jour le title)
+        const btn = document.getElementById('downloadChartBtn');
+        if (btn) {
+          const originalTitle = btn.getAttribute('title');
+          btn.setAttribute('title', t('statsDownloadChartSuccess'));
+          btn.style.background = '#4caf50';
+          setTimeout(() => {
+            btn.setAttribute('title', originalTitle);
+            btn.style.background = '';
+          }, 2000);
+        }
+    }, 'image/png');
+    
+  } catch (error) {
+    console.error(t('statsExportChartError'), error);
+    const btn = document.getElementById('downloadChartBtn');
+    if (btn) {
+      const originalTitle = btn.getAttribute('title');
+      btn.setAttribute('title', t('statsExportChartError'));
+      btn.style.background = '#f44336';
+      setTimeout(() => {
+        btn.setAttribute('title', originalTitle);
+        btn.style.background = '';
+      }, 2000);
+    }
+  }
+}

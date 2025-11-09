@@ -189,11 +189,22 @@ function initTabs() {
   });
 }
 
+// Initialiser le bouton d'export du diagramme
+function initExportChart() {
+  const downloadBtn = document.getElementById('downloadChartBtn');
+  if (downloadBtn) {
+    downloadBtn.addEventListener('click', () => {
+      downloadChartAsPNG();
+    });
+  }
+}
+
 // Initialisation
 initTranslations();
 initCategories();
 initPopinEvents(); // Initialiser la popin
 initVersion(); // Afficher la version
 initTabs(); // Initialiser les onglets
+initExportChart(); // Initialiser le bouton d'export
 initTests(); // Lancer les tests automatiquement
 console.log(t('panelInitialized'));
