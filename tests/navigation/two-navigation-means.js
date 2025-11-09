@@ -14,7 +14,7 @@ function testTwoNavigationMeans() {
     <div class="test-description">${t('testTwoNavigationMeansDesc')}</div>
     <div class="test-results" id="test-${testId}-results">
       <div class="auto-check" id="test-${testId}-info">
-        ${t('testTwoNavigationMeansInfo')}
+        ${replaceEmojisInMessage(t('testTwoNavigationMeansInfo'))}
       </div>
     </div>
     <div class="test-actions">

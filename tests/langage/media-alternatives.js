@@ -14,7 +14,7 @@ function testMediaAlternatives() {
     <div class="test-description">${t('testMediaAlternativesDesc')}</div>
     <div class="test-results" id="test-${testId}-results">
       <div class="auto-check" id="test-${testId}-info">
-        ${t('testMediaAlternativesInfo')}
+        ${replaceEmojisInMessage(t('testMediaAlternativesInfo'))}
       </div>
       <button class="button-small" id="test-${testId}-analyze" style="margin-top: 10px;">Analyser les alternatives textuelles (beta)</button>
     </div>

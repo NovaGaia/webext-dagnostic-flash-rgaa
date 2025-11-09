@@ -14,7 +14,7 @@ function testDownloadInfo() {
     <div class="test-description">${t('testDownloadInfoDesc')}</div>
     <div class="test-results" id="test-${testId}-results">
       <div class="auto-check" id="test-${testId}-info">
-        ${t('testDownloadInfoInfo')}
+        ${replaceEmojisInMessage(t('testDownloadInfoInfo'))}
       </div>
     </div>
     <div class="test-actions">

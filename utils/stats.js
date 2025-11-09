@@ -96,19 +96,19 @@ function createDashIcon(size = 24, color = '#9e9e9e') {
 const categories = {
   navigation: {
     name: t('categoryNavigation'),
-    icon: '🧭',
+    icon: 'navigation', // Référence à l'icône (remplacée par SVG)
     tests: [],
     totalTests: 4 // Nombre total de tests dans cette catégorie
   },
   langage: {
     name: t('categoryLangage'),
-    icon: '🌐',
+    icon: 'langage', // Référence à l'icône (remplacée par SVG)
     tests: [],
     totalTests: 7 // Nombre total de tests dans cette catégorie
   },
   structuration: {
     name: t('categoryStructuration'),
-    icon: '📋',
+    icon: 'structuration', // Référence à l'icône (remplacée par SVG)
     tests: [],
     totalTests: 4 // Nombre total de tests dans cette catégorie
   }

@@ -97,9 +97,23 @@
       border-bottom: 1px solid #1976d2;
     }
     
+    .category-header > span:first-child {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
     .category-icon {
-      margin-right: 8px;
-      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .category-icon svg {
+      width: 20px;
+      height: 20px;
+      display: block;
     }
     
     .category-arrow {
@@ -1141,7 +1155,7 @@
         <div class="category" data-category="navigation">
           <div class="category-header" data-category-toggle="navigation">
             <span>
-              <span class="category-icon">🧭</span>
+              <span class="category-icon" id="category-icon-navigation"></span>
               <span data-i18n="categoryNavigation">Navigation & utilisation</span>
             </span>
             <span class="category-arrow">▶</span>
@@ -1154,7 +1168,7 @@
         <div class="category" data-category="langage">
           <div class="category-header" data-category-toggle="langage">
             <span>
-              <span class="category-icon">🌐</span>
+              <span class="category-icon" id="category-icon-langage"></span>
               <span data-i18n="categoryLangage">Langage & interface</span>
             </span>
             <span class="category-arrow">▶</span>
@@ -1167,7 +1181,7 @@
         <div class="category" data-category="structuration">
           <div class="category-header" data-category-toggle="structuration">
             <span>
-              <span class="category-icon">📋</span>
+              <span class="category-icon" id="category-icon-structuration"></span>
               <span data-i18n="categoryStructuration">Structuration de l'information</span>
             </span>
             <span class="category-arrow">▶</span>
@@ -1202,14 +1216,14 @@
           <div class="stat-value" id="scoreValueScores" style="color: #1976d2; font-size: 24px; font-weight: bold;">0</div>
           <div class="stat-label" data-i18n="statsScore">Score / 100</div>
         </div>
-        <button class="button-small" id="downloadStatsBtn" style="position: absolute; top: 0; right: 0; font-size: 16px; padding: 4px 8px; line-height: 1;" title="Télécharger les statistiques (PNG transparent)" aria-label="Télécharger la grille de statistiques au format PNG transparent">📥</button>
+        <button class="button-small" id="downloadStatsBtn" style="position: absolute; top: 0; right: 0; font-size: 18px; padding: 8px 12px; line-height: 1; display: flex; align-items: center; justify-content: center; min-width: 40px; min-height: 40px;" title="Télécharger les statistiques (PNG transparent)" aria-label="Télécharger la grille de statistiques au format PNG transparent"></button>
       </div>
       
       <div class="pie-chart-container" style="margin-bottom: 15px; padding: 15px; background: #f5f5f5; border-radius: 4px; text-align: center;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
           <div style="font-size: 13px; font-weight: 600;" data-i18n="statsDistribution">Répartition des résultats</div>
           <div style="display: flex; gap: 8px; align-items: center;">
-            <button class="button-small" id="downloadChartBtn" style="font-size: 16px; padding: 4px 8px; line-height: 1;" title="Télécharger (PNG transparent)" aria-label="Télécharger le diagramme au format PNG transparent">📥</button>
+            <button class="button-small" id="downloadChartBtn" style="font-size: 18px; padding: 8px 12px; line-height: 1; display: flex; align-items: center; justify-content: center; min-width: 40px; min-height: 40px;" title="Télécharger (PNG transparent)" aria-label="Télécharger le diagramme au format PNG transparent"></button>
           </div>
         </div>
         <svg id="pieChart" width="200" height="200" style="display: block; margin: 0 auto;">
@@ -1240,6 +1254,7 @@
   
   <!-- Modules utilitaires -->
   <script src="utils/i18n.js"></script>
+  <script src="utils/icons.js"></script>
   <script src="utils/cleanup.js"></script>
   <script src="utils/stats.js"></script>
   <script src="utils/ui.js"></script>

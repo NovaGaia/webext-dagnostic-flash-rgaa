@@ -14,7 +14,7 @@ function testExplicitLinks() {
     <div class="test-description">${t('testExplicitLinksDesc')}</div>
     <div class="test-results" id="test-${testId}-results">
       <div class="auto-check" id="test-${testId}-info">
-        ${t('testExplicitLinksInfo')}
+        ${replaceEmojisInMessage(t('testExplicitLinksInfo'))}
       </div>
     </div>
     <div class="test-actions">

@@ -16,7 +16,7 @@ function testContrasts() {
     <div class="test-description">${t('testContrastsDesc')}</div>
     <div class="test-results" id="test-${testId}-results">
       <div class="auto-check" id="test-${testId}-info">
-        ${t('testContrastsInfo')}
+        ${replaceEmojisInMessage(t('testContrastsInfo'))}
       </div>
       <button class="button-small" id="test-${testId}-analyze" style="margin-top: 10px;">${t('testContrastsAnalyze')}</button>
     </div>
@@ -66,7 +66,7 @@ function testContrasts() {
             const errorMessage = typeof results.error === 'string' 
               ? results.error 
               : (results.error?.value || results.error?.description || results.error?.message || String(results.error));
-            infoElement.textContent = '✗ ' + t('errorContrastAnalysis') + ': ' + errorMessage;
+            infoElement.innerHTML = replaceEmojisInMessage('✗ ' + t('errorContrastAnalysis') + ': ' + errorMessage);
             infoElement.className = 'auto-check failed';
           }
         } else {

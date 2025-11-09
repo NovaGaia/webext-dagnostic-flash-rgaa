@@ -14,7 +14,7 @@ function testColorOnly() {
     <div class="test-description">${t('testColorOnlyDesc')}</div>
     <div class="test-results" id="test-${testId}-results">
       <div class="auto-check" id="test-${testId}-info">
-        ${t('testColorOnlyInfo')}
+        ${replaceEmojisInMessage(t('testColorOnlyInfo'))}
       </div>
     </div>
     <div class="test-actions">

@@ -73,7 +73,10 @@ function resetAllTests() {
     if (btn.classList.contains('active')) {
       btn.classList.remove('active');
       const icon = btn.querySelector('.button-toggle-icon');
-      if (icon) icon.textContent = '👁️';
+      if (icon) {
+        icon.innerHTML = '';
+        icon.appendChild(createEyeIcon(16, '#333'));
+      }
     }
   });
   
@@ -193,6 +196,7 @@ function initTabs() {
 function initExportChart() {
   const downloadChartBtn = document.getElementById('downloadChartBtn');
   if (downloadChartBtn) {
+    downloadChartBtn.appendChild(createDownloadIcon(20, '#fff'));
     downloadChartBtn.addEventListener('click', () => {
       downloadChartAsPNG();
     });
@@ -200,9 +204,29 @@ function initExportChart() {
   
   const downloadStatsBtn = document.getElementById('downloadStatsBtn');
   if (downloadStatsBtn) {
+    downloadStatsBtn.appendChild(createDownloadIcon(20, '#fff'));
     downloadStatsBtn.addEventListener('click', () => {
       downloadStatsAsPNG();
     });
+  }
+}
+
+// Initialiser les icônes dans l'interface
+function initIcons() {
+  // Icônes des catégories
+  const navIcon = document.getElementById('category-icon-navigation');
+  if (navIcon) {
+    navIcon.appendChild(createNavigationIcon(20, '#333'));
+  }
+  
+  const langageIcon = document.getElementById('category-icon-langage');
+  if (langageIcon) {
+    langageIcon.appendChild(createLangageIcon(20, '#333'));
+  }
+  
+  const structurationIcon = document.getElementById('category-icon-structuration');
+  if (structurationIcon) {
+    structurationIcon.appendChild(createStructurationIcon(20, '#333'));
   }
 }
 
@@ -212,6 +236,7 @@ initCategories();
 initPopinEvents(); // Initialiser la popin
 initVersion(); // Afficher la version
 initTabs(); // Initialiser les onglets
+initIcons(); // Initialiser les icônes
 initExportChart(); // Initialiser le bouton d'export
 initTests(); // Lancer les tests automatiquement
 console.log(t('panelInitialized'));

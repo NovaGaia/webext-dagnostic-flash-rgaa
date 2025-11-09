@@ -14,7 +14,7 @@ function testFormFields() {
     <div class="test-description">${t('testFormFieldsDesc')}</div>
     <div class="test-results" id="test-${testId}-results">
       <div class="auto-check" id="test-${testId}-info">
-        ${t('testFormFieldsInfo')}
+        ${replaceEmojisInMessage(t('testFormFieldsInfo'))}
       </div>
       <button class="button-small" id="test-${testId}-analyze" style="margin-top: 10px;">Analyser les champs de formulaire (beta)</button>
     </div>

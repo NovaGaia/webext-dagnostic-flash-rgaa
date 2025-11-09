@@ -69,7 +69,7 @@ function testPageTitle() {
     if (infoElement) {
       if (isException) {
         const errorMsg = isException.value || isException.description || isException.message || String(isException);
-        infoElement.textContent = '✗ ' + t('errorPageAnalysis') + ': ' + errorMsg;
+        infoElement.innerHTML = replaceEmojisInMessage('✗ ' + t('errorPageAnalysis') + ': ' + errorMsg);
         infoElement.className = 'auto-check failed';
         if (detectedElement) {
           detectedElement.style.display = 'none';
@@ -100,7 +100,7 @@ function testPageTitle() {
         }
         
         // Le message "Test à valider manuellement" s'affiche après le bloc Title/H1
-        infoElement.innerHTML = t('testPageTitleInfo');
+        infoElement.innerHTML = replaceEmojisInMessage(t('testPageTitleInfo'));
         infoElement.className = 'auto-check';
       }
     }

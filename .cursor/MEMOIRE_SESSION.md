@@ -189,13 +189,42 @@ Extension navigateur (Chrome/Firefox) pour réaliser le diagnostic flash d'acces
 - `statsExportChartError` : "Erreur lors de l'export du diagramme" / "Error exporting chart"
 
 **Améliorations de l'interface** :
-- **Bouton avec pictogramme** : Le bouton d'export utilise maintenant une icône (📥) au lieu de texte
+- **Bouton avec icône Heroicons** : Le bouton d'export utilise maintenant une icône SVG Heroicons (ArrowDownTray) au lieu d'emoji
+- **Taille et lisibilité améliorées** : Boutons agrandis (40x40px minimum) avec icônes blanches (20px) sur fond bleu pour meilleur contraste
 - **Messages de feedback** : Les messages de succès/erreur sont affichés dans l'attribut `title` du bouton (tooltip) au lieu de modifier le texte
 
 **Corrections apportées** :
 - **Gestion d'erreur améliorée** : Les erreurs sont maintenant formatées correctement au lieu d'afficher `[object Object]` ou `[object DOMException]`
 - **Gestion d'erreur dans le nettoyage** : Correction de la gestion d'erreur dans `cleanupMediaAlternativesVisualization()` pour afficher des messages d'erreur descriptifs
 - **Suppression du copier-coller** : La fonctionnalité de copier-coller a été supprimée car elle était problématique dans les DevTools (permissions policy). Seul le téléchargement est disponible.
+
+### 6.2. Export de la grille de statistiques en PNG
+
+**Fichiers modifiés** : `utils/stats.js`, `panel.html`, `panel.js`
+
+**Fonctionnalité ajoutée** : Bouton d'export pour télécharger la grille de statistiques 2x2 au format PNG transparent.
+
+**Implémentation** :
+- **Fonction `createStatsGridSVG()`** :
+  - Crée un SVG avec uniquement la grille de statistiques 2x2
+  - Format : Score (en plus gros) | Réussis / Échoués | Non applicables
+  - Chaque cellule contient : icône SVG Heroicons (ChartBar, CheckCircle, XCircle, MinusCircle), valeur en gras, label
+  - Layout : icône et valeur sur la même ligne (ligne 1), label en dessous (ligne 2)
+  - Police sans-serif (Verdana) pour tous les textes
+  - Paramètre `includeBackground` pour choisir le fond (false = transparent)
+- **Fonction `downloadStatsAsPNG()`** :
+  - Télécharge la grille au format PNG transparent
+  - Affiche un message de succès dans le `title` du bouton
+- **Positionnement des éléments** :
+  - Ligne 1 : icône à gauche, valeur à droite (côte à côte)
+  - Ligne 2 : label centré en dessous
+  - Espacement vertical optimisé pour éviter les chevauchements
+  - Utilisation de `dominant-baseline: middle` pour l'alignement vertical
+
+**Bouton d'export** :
+- Positionné en haut à droite de la section des statistiques
+- Icône Heroicons ArrowDownTray (blanc, 20px)
+- Taille minimale : 40x40px pour meilleure lisibilité
 
 ### 7. Système d'onglets (Audit / Scores)
 
@@ -279,7 +308,57 @@ Extension navigateur (Chrome/Firefox) pour réaliser le diagnostic flash d'acces
 - Fonction `getAccessibleName()` pour calculer le nom accessible selon les règles ARIA
 - Nettoyage intégré dans `cleanupAllVisualizations()`
 
-### 10. Migration vers pnpm dans les workflows GitHub
+### 10. Système d'icônes SVG Heroicons
+
+**Fichiers créés/modifiés** : `utils/icons.js`, `panel.html`, `panel.js`, tous les fichiers de tests, `utils/i18n.js`
+
+**Fonctionnalité ajoutée** : Remplacement complet de tous les emojis par des icônes SVG cohérentes basées sur Heroicons.
+
+**Icônes créées** :
+- **Catégories** : Compass (Navigation), Globe (Langage), Clipboard (Structuration)
+- **Actions** : ArrowDownTray (Téléchargement), MagnifyingGlass (Vérification), Eye (Visualisation)
+- **Statuts** : CheckCircle (✓), XCircle (✗), ExclamationTriangle (⚠, ▲), InformationCircle (ℹ️)
+- **Statistiques** : ChartBar (Score), CheckCircle (Réussis), XCircle (Échoués), MinusCircle (Non applicables)
+
+**Implémentation** :
+- **Fichier `utils/icons.js`** : Bibliothèque centralisée de toutes les icônes Heroicons
+  - Fonction `createHeroIcon()` : Crée une icône SVG avec viewBox 24x24 uniforme
+  - Fonctions spécifiques pour chaque type d'icône (createNavigationIcon, createCheckIcon, etc.)
+  - Fonction `replaceEmojisInMessage()` : Remplace automatiquement les emojis dans les messages par des icônes SVG
+  - Fonction `createMessageWithIcons()` : Crée un élément DOM avec des icônes remplacées
+- **Alignement des icônes dans les titres** :
+  - CSS amélioré avec `display: flex` et `align-items: center` sur le parent
+  - Utilisation de `gap: 8px` pour l'espacement
+  - Icônes parfaitement alignées verticalement avec le texte
+- **Remplacement dans tous les fichiers** :
+  - Templates HTML initiaux : tous les emojis remplacés avec `replaceEmojisInMessage()`
+  - Messages dynamiques : utilisation de `innerHTML` avec `replaceEmojisInMessage()` au lieu de `textContent`
+  - Traductions : les emojis dans `utils/i18n.js` sont remplacés dynamiquement lors de l'affichage
+- **Boutons d'export améliorés** :
+  - Taille augmentée : `min-width: 40px`, `min-height: 40px`
+  - Icônes blanches (20px) sur fond bleu pour meilleur contraste
+  - Padding augmenté : `8px 12px` pour meilleure zone de clic
+
+**Avantages** :
+- Style cohérent : toutes les icônes utilisent le même viewBox (24x24) et stroke-width (2)
+- Rendu vectoriel net à toutes les résolutions
+- Pas de dépendance externe : icônes intégrées directement dans le code
+- Homogénéité visuelle : toutes les icônes ont la même taille et le même style
+
+**Emojis remplacés** :
+- 🧭 → Compass (Navigation)
+- 🌐 → Globe (Langage)
+- 📋 → Clipboard (Structuration)
+- 📥 → ArrowDownTray (Téléchargement)
+- 🔍 → MagnifyingGlass (Vérification)
+- 👁️ → Eye (Visualisation)
+- ✓ → CheckCircle (Succès)
+- ✗ → XCircle (Erreur)
+- ▲ → ExclamationTriangle (Avertissement)
+- ⚠ → ExclamationTriangle (Avertissement)
+- ℹ️ → InformationCircle (Information)
+
+### 11. Migration vers pnpm dans les workflows GitHub
 
 **Fichiers modifiés** : `.github/workflows/release.yml`, `.github/workflows/package.yml`, `.github/workflows/changesets.yml`, `package.json`
 
@@ -301,7 +380,7 @@ Extension navigateur (Chrome/Firefox) pour réaliser le diagnostic flash d'acces
 - Meilleure gestion des dépendances avec pnpm
 - Workflow changesets fonctionnel avec création correcte des PRs de version
 
-### 11. Mise à jour proactive de la documentation par l'IA
+### 12. Mise à jour proactive de la documentation par l'IA
 
 **Fichier créé** : `.cursor/rules`
 
@@ -659,9 +738,10 @@ webext-dagnostic-flash-rgaa/
 │   └── icon-128.png
 ├── utils/
 │   ├── i18n.js               # Système de traduction
-│   ├── stats.js              # Gestion des statistiques
-│   ├── ui.js                 # Interface (catégories, documentation)
-│   └── cleanup.js            # Nettoyage des visualisations
+│   ├── icons.js            # Système d'icônes SVG Heroicons
+│   ├── stats.js            # Gestion des statistiques
+│   ├── ui.js               # Interface (catégories, documentation)
+│   └── cleanup.js          # Nettoyage des visualisations
 ├── tests/
 │   ├── navigation/
 │   │   ├── responsive-design.js
@@ -758,7 +838,11 @@ webext-dagnostic-flash-rgaa/
 - ✅ Analyse des champs de formulaire avec visualisation des labels et inputs
 - ✅ Analyse des alternatives textuelles avec bulles d'information
 - ✅ Migration vers pnpm dans les workflows GitHub
-- ✅ Export du diagramme circulaire en PNG (copié dans le presse-papiers)
+- ✅ Export du diagramme circulaire en PNG (téléchargement transparent)
+- ✅ Export de la grille de statistiques en PNG (2x2 avec pictogrammes)
+- ✅ Système d'icônes SVG Heroicons (remplacement complet des emojis)
+- ✅ Alignement parfait des icônes dans les titres de catégories
+- ✅ Boutons d'export améliorés (taille et lisibilité)
 
 ---
 
@@ -770,16 +854,17 @@ Quand un test revient à "Non-testé", il est explicitement retiré du tableau `
 ### Ordre de chargement des scripts
 Dans `panel.html`, l'ordre est important :
 1. `utils/i18n.js` (d'abord pour que `t()` soit disponible)
-2. `utils/cleanup.js`, `utils/stats.js`, `utils/ui.js`
-3. `tests/navigation/keyboard-visualization.js` (visualisations)
-4. Modules contrastes (dans l'ordre de dépendance) :
+2. `utils/icons.js` (pour que les fonctions d'icônes soient disponibles)
+3. `utils/cleanup.js`, `utils/stats.js`, `utils/ui.js`
+4. `tests/navigation/keyboard-visualization.js` (visualisations)
+5. Modules contrastes (dans l'ordre de dépendance) :
    - `tests/langage/contrasts/utils.js`
    - `tests/langage/contrasts/analyze.js`
    - `tests/langage/contrasts/display.js`
    - `tests/langage/contrasts/highlight.js`
    - `tests/langage/contrasts/observer.js`
-5. Tous les tests
-6. `panel.js` (en dernier)
+6. Tous les tests
+7. `panel.js` (en dernier)
 
 ### IDs des éléments de documentation
 Pour chaque test, les IDs des sections sont :

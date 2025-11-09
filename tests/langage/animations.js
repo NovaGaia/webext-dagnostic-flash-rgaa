@@ -14,7 +14,7 @@ function testAnimations() {
     <div class="test-description">${t('testAnimationsDesc')}</div>
     <div class="test-results" id="test-${testId}-results">
       <div class="auto-check" id="test-${testId}-info">
-        ${t('testAnimationsInfo')}
+        ${replaceEmojisInMessage(t('testAnimationsInfo'))}
       </div>
     </div>
     <div class="test-actions">
