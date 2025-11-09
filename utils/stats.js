@@ -1,5 +1,97 @@
 // Gestion des statistiques et des catégories
 
+// Système d'icônes SVG cohérentes pour les statistiques
+// Utilisation d'icônes basées sur Heroicons (style outline, 24x24 viewBox)
+// Toutes les icônes ont le même viewBox pour garantir l'homogénéité
+
+function createScoreIcon(size = 24, color = '#1976d2') {
+  // Icône "Chart Bar" de Heroicons - représente les statistiques/score
+  const iconGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('width', size);
+  svg.setAttribute('height', size);
+  svg.setAttribute('fill', 'none');
+  
+  // Path de l'icône Chart Bar (Heroicons)
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('stroke-linecap', 'round');
+  path.setAttribute('stroke-linejoin', 'round');
+  path.setAttribute('stroke-width', '2');
+  path.setAttribute('stroke', color);
+  path.setAttribute('d', 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z');
+  svg.appendChild(path);
+  iconGroup.appendChild(svg);
+  
+  return iconGroup;
+}
+
+function createCheckIcon(size = 24, color = '#4caf50') {
+  // Icône "Check Circle" de Heroicons
+  const iconGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('width', size);
+  svg.setAttribute('height', size);
+  svg.setAttribute('fill', 'none');
+  
+  // Path de l'icône Check Circle (Heroicons)
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('stroke-linecap', 'round');
+  path.setAttribute('stroke-linejoin', 'round');
+  path.setAttribute('stroke-width', '2');
+  path.setAttribute('stroke', color);
+  path.setAttribute('d', 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z');
+  svg.appendChild(path);
+  iconGroup.appendChild(svg);
+  
+  return iconGroup;
+}
+
+function createCrossIcon(size = 24, color = '#f44336') {
+  // Icône "X Circle" de Heroicons
+  const iconGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('width', size);
+  svg.setAttribute('height', size);
+  svg.setAttribute('fill', 'none');
+  
+  // Path de l'icône X Circle (Heroicons)
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('stroke-linecap', 'round');
+  path.setAttribute('stroke-linejoin', 'round');
+  path.setAttribute('stroke-width', '2');
+  path.setAttribute('stroke', color);
+  path.setAttribute('d', 'M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z');
+  svg.appendChild(path);
+  iconGroup.appendChild(svg);
+  
+  return iconGroup;
+}
+
+function createDashIcon(size = 24, color = '#9e9e9e') {
+  // Icône "Minus Circle" de Heroicons
+  const iconGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('width', size);
+  svg.setAttribute('height', size);
+  svg.setAttribute('fill', 'none');
+  
+  // Path de l'icône Minus Circle (Heroicons)
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('stroke-linecap', 'round');
+  path.setAttribute('stroke-linejoin', 'round');
+  path.setAttribute('stroke-width', '2');
+  path.setAttribute('stroke', color);
+  path.setAttribute('d', 'M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z');
+  svg.appendChild(path);
+  iconGroup.appendChild(svg);
+  
+  return iconGroup;
+}
+
 // Structure des catégories
 const categories = {
   navigation: {
@@ -446,7 +538,7 @@ function updateSummaryTable() {
   tableContainer.appendChild(table);
 }
 
-// Créer un SVG complet avec diagramme et légende pour l'export
+// Créer un SVG complet avec diagramme, légende et statistiques pour l'export
 function createExportSVG(includeBackground = false) {
   const svg = document.getElementById('pieChart');
   const legend = document.getElementById('pieChartLegend');
@@ -463,6 +555,17 @@ function createExportSVG(includeBackground = false) {
     }
   }
   
+  // Récupérer les statistiques depuis le DOM
+  const scoreEl = document.getElementById('scoreValueScores') || document.getElementById('scoreValue');
+  const passedEl = document.getElementById('passedTestsScores') || document.getElementById('passedTests');
+  const failedEl = document.getElementById('failedTestsScores') || document.getElementById('failedTests');
+  const notApplicableEl = document.getElementById('notApplicableTestsScores') || document.getElementById('notApplicableTests');
+  
+  const score = scoreEl ? parseInt(scoreEl.textContent) || 0 : 0;
+  const passed = passedEl ? parseInt(passedEl.textContent) || 0 : 0;
+  const failed = failedEl ? parseInt(failedEl.textContent) || 0 : 0;
+  const notApplicable = notApplicableEl ? parseInt(notApplicableEl.textContent) || 0 : 0;
+  
   // Cloner le SVG du diagramme
   const clonedSvg = svg.cloneNode(true);
   
@@ -475,7 +578,8 @@ function createExportSVG(includeBackground = false) {
   const svgWidth = parseInt(svg.getAttribute('width') || 200);
   const svgHeight = parseInt(svg.getAttribute('height') || 200);
   const legendHeight = legendData ? 60 : 0;
-  const totalHeight = svgHeight + legendHeight + 20; // 20px de marge
+  const statsGridHeight = 120; // Hauteur de la grille de stats (2x2)
+  const totalHeight = svgHeight + legendHeight + statsGridHeight + 30; // 30px de marges
   
   // Créer un nouveau SVG conteneur
   const exportSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -525,6 +629,7 @@ function createExportSVG(includeBackground = false) {
       text.setAttribute('x', xOffset + 18);
       text.setAttribute('y', yPos + 9);
       text.setAttribute('font-size', '11');
+      text.setAttribute('font-family', 'Verdana, sans-serif');
       text.setAttribute('fill', '#333');
       text.textContent = `${item.label}: ${item.count} (${item.percentage}%)`;
       legendGroup.appendChild(text);
@@ -533,7 +638,313 @@ function createExportSVG(includeBackground = false) {
     exportSvg.appendChild(legendGroup);
   }
   
+  // Ajouter la grille de statistiques 2x2
+  const statsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  statsGroup.setAttribute('transform', `translate(0, ${svgHeight + legendHeight + 20})`);
+  
+  const cellWidth = svgWidth / 2;
+  const cellHeight = statsGridHeight / 2;
+  const padding = 10;
+  
+  // Fonction pour créer une cellule de statistique
+  const createStatCell = (x, y, value, label, valueColor, valueSize, icon) => {
+    const cellGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    cellGroup.setAttribute('transform', `translate(${x}, ${y})`);
+    
+    // Fond de la cellule
+    const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    bg.setAttribute('x', padding);
+    bg.setAttribute('y', padding);
+    bg.setAttribute('width', cellWidth - padding * 2);
+    bg.setAttribute('height', cellHeight - padding * 2);
+    bg.setAttribute('fill', '#f5f5f5');
+    bg.setAttribute('rx', '4');
+    cellGroup.appendChild(bg);
+    
+    // Calculer les positions verticales pour éviter les chevauchements
+    const centerY = cellHeight / 2;
+    let iconY, valueY, labelY;
+    
+    if (icon) {
+      // Avec picto : répartir l'espace verticalement
+      iconY = centerY - 35; // Picto en haut
+      valueY = centerY - 5; // Valeur au centre
+      labelY = centerY + 20; // Label en bas
+    } else {
+      // Sans picto : valeur et label centrés
+      valueY = centerY - 5;
+      labelY = centerY + 15;
+    }
+    
+    // Picto (icône)
+    if (icon) {
+      const iconText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      iconText.setAttribute('x', cellWidth / 2);
+      iconText.setAttribute('y', iconY);
+      iconText.setAttribute('text-anchor', 'middle');
+      iconText.setAttribute('font-size', '18');
+      iconText.setAttribute('dominant-baseline', 'middle');
+      iconText.textContent = icon;
+      cellGroup.appendChild(iconText);
+    }
+    
+    // Valeur
+    const valueText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    valueText.setAttribute('x', cellWidth / 2);
+    valueText.setAttribute('y', valueY);
+    valueText.setAttribute('text-anchor', 'middle');
+    valueText.setAttribute('font-size', valueSize);
+    valueText.setAttribute('font-family', 'Verdana, sans-serif');
+    valueText.setAttribute('font-weight', 'bold');
+    valueText.setAttribute('fill', valueColor);
+    valueText.setAttribute('dominant-baseline', 'middle');
+    valueText.textContent = value;
+    cellGroup.appendChild(valueText);
+    
+    // Label
+    const labelText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    labelText.setAttribute('x', cellWidth / 2);
+    labelText.setAttribute('y', labelY);
+    labelText.setAttribute('text-anchor', 'middle');
+    labelText.setAttribute('font-size', '11');
+    labelText.setAttribute('font-family', 'Verdana, sans-serif');
+    labelText.setAttribute('fill', '#666');
+    labelText.setAttribute('dominant-baseline', 'middle');
+    labelText.textContent = label;
+    cellGroup.appendChild(labelText);
+    
+    return cellGroup;
+  };
+  
+  // Grille 2x2 : Score en premier (en plus gros), puis Réussis, Échoués, Non applicables
+  // Ligne 1, Colonne 1 : Score (sans picto dans l'export du diagramme)
+  statsGroup.appendChild(createStatCell(0, 0, score, t('statsScore'), '#1976d2', '32', null));
+  
+  // Ligne 1, Colonne 2 : Réussis
+  statsGroup.appendChild(createStatCell(cellWidth, 0, passed, t('statsPassed'), '#4caf50', '18', null));
+  
+  // Ligne 2, Colonne 1 : Échoués
+  statsGroup.appendChild(createStatCell(0, cellHeight, failed, t('statsFailed'), '#f44336', '18', null));
+  
+  // Ligne 2, Colonne 2 : Non applicables
+  statsGroup.appendChild(createStatCell(cellWidth, cellHeight, notApplicable, t('statsNotApplicable'), '#9e9e9e', '18', null));
+  
+  exportSvg.appendChild(statsGroup);
+  
   return exportSvg;
+}
+
+// Créer un SVG avec uniquement la grille de statistiques 2x2
+function createStatsGridSVG(includeBackground = false) {
+  // Récupérer les statistiques depuis le DOM
+  const scoreEl = document.getElementById('scoreValueScores') || document.getElementById('scoreValue');
+  const passedEl = document.getElementById('passedTestsScores') || document.getElementById('passedTests');
+  const failedEl = document.getElementById('failedTestsScores') || document.getElementById('failedTests');
+  const notApplicableEl = document.getElementById('notApplicableTestsScores') || document.getElementById('notApplicableTests');
+  
+  const score = scoreEl ? parseInt(scoreEl.textContent) || 0 : 0;
+  const passed = passedEl ? parseInt(passedEl.textContent) || 0 : 0;
+  const failed = failedEl ? parseInt(failedEl.textContent) || 0 : 0;
+  const notApplicable = notApplicableEl ? parseInt(notApplicableEl.textContent) || 0 : 0;
+  
+  // Dimensions de la grille
+  const gridWidth = 400;
+  const gridHeight = 200;
+  const cellWidth = gridWidth / 2;
+  const cellHeight = gridHeight / 2;
+  const padding = 10;
+  
+  // Créer un nouveau SVG conteneur
+  const exportSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  exportSvg.setAttribute('width', gridWidth);
+  exportSvg.setAttribute('height', gridHeight);
+  exportSvg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  
+  // Ajouter un fond blanc si demandé
+  if (includeBackground) {
+    const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    bg.setAttribute('width', '100%');
+    bg.setAttribute('height', '100%');
+    bg.setAttribute('fill', '#ffffff');
+    exportSvg.appendChild(bg);
+  }
+  
+  // Fonction pour créer une cellule de statistique
+  const createStatCell = (x, y, value, label, valueColor, valueSize, iconType) => {
+    const cellGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    cellGroup.setAttribute('transform', `translate(${x}, ${y})`);
+    
+    // Fond de la cellule
+    const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    bg.setAttribute('x', padding);
+    bg.setAttribute('y', padding);
+    bg.setAttribute('width', cellWidth - padding * 2);
+    bg.setAttribute('height', cellHeight - padding * 2);
+    bg.setAttribute('fill', '#f5f5f5');
+    bg.setAttribute('rx', '4');
+    cellGroup.appendChild(bg);
+    
+    // Calculer les positions verticales
+    const centerY = cellHeight / 2;
+    const line1Y = centerY - 10; // Ligne 1 : picto + valeur
+    const line2Y = centerY + 20; // Ligne 2 : label
+    
+    // Ligne 1 : Picto + Valeur (côte à côte)
+    if (iconType) {
+      // Créer l'icône SVG selon le type
+      let iconSvg;
+      const iconSize = 24; // Taille uniforme pour toutes les icônes
+      
+      switch (iconType) {
+        case 'score':
+          iconSvg = createScoreIcon(iconSize, valueColor);
+          break;
+        case 'passed':
+          iconSvg = createCheckIcon(iconSize, valueColor);
+          break;
+        case 'failed':
+          iconSvg = createCrossIcon(iconSize, valueColor);
+          break;
+        case 'notApplicable':
+          iconSvg = createDashIcon(iconSize, valueColor);
+          break;
+        default:
+          iconSvg = null;
+      }
+      
+      if (iconSvg) {
+        // Positionner l'icône à gauche de la valeur
+        iconSvg.setAttribute('transform', `translate(${cellWidth / 2 - 30}, ${line1Y - iconSize / 2})`);
+        cellGroup.appendChild(iconSvg);
+      }
+    }
+    
+    // Valeur à droite du picto (ou centrée si pas de picto)
+    const valueText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    valueText.setAttribute('x', iconType ? cellWidth / 2 + 20 : cellWidth / 2);
+    valueText.setAttribute('y', line1Y);
+    valueText.setAttribute('text-anchor', 'middle');
+    valueText.setAttribute('font-size', valueSize);
+    valueText.setAttribute('font-family', 'Verdana, sans-serif');
+    valueText.setAttribute('font-weight', 'bold');
+    valueText.setAttribute('fill', valueColor);
+    valueText.setAttribute('dominant-baseline', 'middle');
+    valueText.textContent = value;
+    cellGroup.appendChild(valueText);
+    
+    // Ligne 2 : Label (centré)
+    const labelText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    labelText.setAttribute('x', cellWidth / 2);
+    labelText.setAttribute('y', line2Y);
+    labelText.setAttribute('text-anchor', 'middle');
+    labelText.setAttribute('font-size', '11');
+    labelText.setAttribute('font-family', 'Verdana, sans-serif');
+    labelText.setAttribute('fill', '#666');
+    labelText.setAttribute('dominant-baseline', 'middle');
+    labelText.textContent = label;
+    cellGroup.appendChild(labelText);
+    
+    return cellGroup;
+  };
+  
+  // Grille 2x2 : Score en premier (en plus gros), puis Réussis, Échoués, Non applicables
+  // Ligne 1, Colonne 1 : Score
+  exportSvg.appendChild(createStatCell(0, 0, score, t('statsScore'), '#1976d2', '32', 'score'));
+  
+  // Ligne 1, Colonne 2 : Réussis
+  exportSvg.appendChild(createStatCell(cellWidth, 0, passed, t('statsPassed'), '#4caf50', '18', 'passed'));
+  
+  // Ligne 2, Colonne 1 : Échoués
+  exportSvg.appendChild(createStatCell(0, cellHeight, failed, t('statsFailed'), '#f44336', '18', 'failed'));
+  
+  // Ligne 2, Colonne 2 : Non applicables
+  exportSvg.appendChild(createStatCell(cellWidth, cellHeight, notApplicable, t('statsNotApplicable'), '#9e9e9e', '18', 'notApplicable'));
+  
+  return exportSvg;
+}
+
+// Exporter la grille de statistiques en PNG et le télécharger (fond transparent)
+async function downloadStatsAsPNG() {
+  const exportSvg = createStatsGridSVG(false); // Fond transparent
+  if (!exportSvg) {
+    console.error(t('statsExportChartError'));
+    return;
+  }
+  
+  try {
+    const gridWidth = 400;
+    const gridHeight = 200;
+    
+    // Créer un canvas pour la conversion
+    const canvas = document.createElement('canvas');
+    canvas.width = gridWidth;
+    canvas.height = gridHeight;
+    const ctx = canvas.getContext('2d');
+    
+    // Convertir le SVG en image
+    const svgData = new XMLSerializer().serializeToString(exportSvg);
+    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svgBlob);
+    
+    const img = new Image();
+    
+    await new Promise((resolve, reject) => {
+      img.onload = () => {
+        // Fond transparent (pas de fillRect)
+        ctx.drawImage(img, 0, 0);
+        URL.revokeObjectURL(url);
+        resolve();
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error('Erreur lors du chargement de l\'image SVG'));
+      };
+      img.src = url;
+    });
+    
+    // Convertir le canvas en blob PNG
+    canvas.toBlob((blob) => {
+      if (!blob) {
+        console.error(t('statsExportChartError'));
+        return;
+      }
+      
+      // Télécharger le fichier
+      const downloadUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = 'statistiques-rgaa.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(downloadUrl);
+      
+      // Afficher un message de succès (mettre à jour le title)
+      const btn = document.getElementById('downloadStatsBtn');
+      if (btn) {
+        const originalTitle = btn.getAttribute('title');
+        btn.setAttribute('title', t('statsDownloadChartSuccess'));
+        btn.style.background = '#4caf50';
+        setTimeout(() => {
+          btn.setAttribute('title', originalTitle);
+          btn.style.background = '';
+        }, 2000);
+      }
+    }, 'image/png');
+    
+  } catch (error) {
+    console.error(t('statsExportChartError'), error);
+    const btn = document.getElementById('downloadStatsBtn');
+    if (btn) {
+      const originalTitle = btn.getAttribute('title');
+      btn.setAttribute('title', t('statsExportChartError'));
+      btn.style.background = '#f44336';
+      setTimeout(() => {
+        btn.setAttribute('title', originalTitle);
+        btn.style.background = '';
+      }, 2000);
+    }
+  }
 }
 
 // Exporter le diagramme circulaire en PNG et le télécharger (fond transparent)
