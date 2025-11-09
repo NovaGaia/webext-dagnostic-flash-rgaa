@@ -116,7 +116,7 @@ function detectDownloadableFiles(testId) {
     if (!infoElement) return;
     
     if (isException) {
-      infoElement.textContent = '✗ ' + t('errorDetection') + ': ' + (isException.value || isException);
+      infoElement.innerHTML = replaceEmojisInMessage('✗ ' + t('errorDetection') + ': ' + (isException.value || isException));
       infoElement.className = 'auto-check failed';
       return;
     }
@@ -145,7 +145,7 @@ function detectDownloadableFiles(testId) {
       infoElement.className = 'auto-check ' + (results.closedFormatFiles.length > 0 ? 'warning' : 'passed');
     }
     
-    infoElement.textContent = message;
+    infoElement.innerHTML = replaceEmojisInMessage(message);
   });
 }
 

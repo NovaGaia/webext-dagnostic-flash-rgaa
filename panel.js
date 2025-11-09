@@ -73,7 +73,10 @@ function resetAllTests() {
     if (btn.classList.contains('active')) {
       btn.classList.remove('active');
       const icon = btn.querySelector('.button-toggle-icon');
-      if (icon) icon.textContent = '👁️';
+      if (icon) {
+        icon.innerHTML = '';
+        icon.appendChild(createEyeIcon(16, '#333'));
+      }
     }
   });
   
@@ -189,11 +192,114 @@ function initTabs() {
   });
 }
 
+// Initialiser les boutons d'export
+function initExportChart() {
+  const downloadChartBtn = document.getElementById('downloadChartBtn');
+  if (downloadChartBtn) {
+    downloadChartBtn.appendChild(createDownloadIcon(20, '#fff'));
+    downloadChartBtn.addEventListener('click', () => {
+      downloadChartAsPNG();
+    });
+  }
+  
+  const downloadStatsBtn = document.getElementById('downloadStatsBtn');
+  if (downloadStatsBtn) {
+    downloadStatsBtn.appendChild(createDownloadIcon(20, '#fff'));
+    downloadStatsBtn.addEventListener('click', () => {
+      downloadStatsAsPNG();
+    });
+  }
+}
+
+// Initialiser les icônes dans l'interface
+function initIcons() {
+  // Détecter si on est en dark mode
+  const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const defaultIconColor = isDarkMode ? '#ffffff' : '#333';
+  
+  // Icône du header
+  const headerIcon = document.getElementById('header-icon');
+  if (headerIcon) {
+    const iconColor = isDarkMode ? '#ffffff' : '#1a1a1a';
+    headerIcon.appendChild(createMagnifyingGlassIcon(20, iconColor));
+  }
+  
+  // Icônes des catégories
+  const navIcon = document.getElementById('category-icon-navigation');
+  if (navIcon) {
+    navIcon.appendChild(createNavigationIcon(20, defaultIconColor));
+  }
+  
+  const langageIcon = document.getElementById('category-icon-langage');
+  if (langageIcon) {
+    langageIcon.appendChild(createLangageIcon(20, defaultIconColor));
+  }
+  
+  const structurationIcon = document.getElementById('category-icon-structuration');
+  if (structurationIcon) {
+    structurationIcon.appendChild(createStructurationIcon(20, defaultIconColor));
+  }
+  
+  // Icônes des statistiques - Onglet Audit
+  const totalIcon = document.getElementById('stat-icon-total');
+  if (totalIcon) {
+    totalIcon.appendChild(createTotalIcon(20, defaultIconColor));
+  }
+  
+  const passedIcon = document.getElementById('stat-icon-passed');
+  if (passedIcon) {
+    passedIcon.appendChild(createPassedIcon(20, '#4caf50'));
+  }
+  
+  const failedIcon = document.getElementById('stat-icon-failed');
+  if (failedIcon) {
+    failedIcon.appendChild(createFailedIcon(20, '#f44336'));
+  }
+  
+  const notApplicableIcon = document.getElementById('stat-icon-not-applicable');
+  if (notApplicableIcon) {
+    notApplicableIcon.appendChild(createNotApplicableIcon(20, '#9e9e9e'));
+  }
+  
+  const scoreIcon = document.getElementById('stat-icon-score');
+  if (scoreIcon) {
+    scoreIcon.appendChild(createScoreIcon(20, '#1976d2'));
+  }
+  
+  // Icônes des statistiques - Onglet Scores
+  const totalIconScores = document.getElementById('stat-icon-total-scores');
+  if (totalIconScores) {
+    totalIconScores.appendChild(createTotalIcon(20, '#333'));
+  }
+  
+  const passedIconScores = document.getElementById('stat-icon-passed-scores');
+  if (passedIconScores) {
+    passedIconScores.appendChild(createPassedIcon(20, '#4caf50'));
+  }
+  
+  const failedIconScores = document.getElementById('stat-icon-failed-scores');
+  if (failedIconScores) {
+    failedIconScores.appendChild(createFailedIcon(20, '#f44336'));
+  }
+  
+  const notApplicableIconScores = document.getElementById('stat-icon-not-applicable-scores');
+  if (notApplicableIconScores) {
+    notApplicableIconScores.appendChild(createNotApplicableIcon(20, '#9e9e9e'));
+  }
+  
+  const scoreIconScores = document.getElementById('stat-icon-score-scores');
+  if (scoreIconScores) {
+    scoreIconScores.appendChild(createScoreIcon(20, '#1976d2'));
+  }
+}
+
 // Initialisation
 initTranslations();
 initCategories();
 initPopinEvents(); // Initialiser la popin
 initVersion(); // Afficher la version
 initTabs(); // Initialiser les onglets
+initIcons(); // Initialiser les icônes
+initExportChart(); // Initialiser le bouton d'export
 initTests(); // Lancer les tests automatiquement
 console.log(t('panelInitialized'));

@@ -19,6 +19,9 @@ const translations = {
     statsScore: 'Score',
     statsDistribution: 'Répartition des résultats',
     statsReset: 'Réinitialiser tous les tests',
+    statsDownloadChart: 'Télécharger (PNG transparent)',
+    statsDownloadChartSuccess: 'Diagramme téléchargé !',
+    statsExportChartError: 'Erreur lors de l\'export du diagramme',
     
     // Messages généraux
     emptyState: 'Aucun test effectué pour cette catégorie',
@@ -228,6 +231,9 @@ const translations = {
     statsScore: 'Score',
     statsDistribution: 'Results distribution',
     statsReset: 'Reset all tests',
+    statsDownloadChart: 'Download (transparent PNG)',
+    statsDownloadChartSuccess: 'Chart downloaded!',
+    statsExportChartError: 'Error exporting chart',
     
     // Messages généraux
     emptyState: 'No tests performed for this category',

@@ -21,7 +21,7 @@ function displayHeadingsHierarchy(testId, results) {
       <div class="headings-hierarchy-section-header">
         <h4 class="headings-hierarchy-section-title">Arborescence des titres</h4>
         <button class="button-toggle-headings" id="toggle-headings-visualization" title="${t('toggleHeadingsVisualization')}">
-          <span class="button-toggle-icon">👁️</span>
+          <span class="button-toggle-icon"></span>
         </button>
       </div>
       <div class="headings-tree" id="headings-tree">
@@ -62,7 +62,7 @@ function displayHeadingsHierarchy(testId, results) {
       <div class="headings-hierarchy-section-header">
         <h4 class="headings-hierarchy-section-title">Landmarks</h4>
         <button class="button-toggle-landmarks" id="toggle-landmarks-visualization" title="${t('toggleLandmarksVisualization')}">
-          <span class="button-toggle-icon">👁️</span>
+          <span class="button-toggle-icon"></span>
         </button>
       </div>
       <div class="landmarks-tree" id="landmarks-tree">
@@ -130,6 +130,21 @@ function displayHeadingsHierarchy(testId, results) {
   // Initialiser les boutons toggle (après avoir remplacé le HTML)
   setTimeout(() => {
     initVisualizationToggles(testId, results);
+    // Initialiser les icônes dans les boutons toggle
+    const toggleHeadingsBtn = document.getElementById('toggle-headings-visualization');
+    if (toggleHeadingsBtn) {
+      const iconEl = toggleHeadingsBtn.querySelector('.button-toggle-icon');
+      if (iconEl && !iconEl.hasChildNodes()) {
+        iconEl.appendChild(createEyeIcon(16, '#333'));
+      }
+    }
+    const toggleLandmarksBtn = document.getElementById('toggle-landmarks-visualization');
+    if (toggleLandmarksBtn) {
+      const iconEl = toggleLandmarksBtn.querySelector('.button-toggle-icon');
+      if (iconEl && !iconEl.hasChildNodes()) {
+        iconEl.appendChild(createEyeIcon(16, '#333'));
+      }
+    }
   }, 0);
 }
 
@@ -194,10 +209,21 @@ function initVisualizationToggles(testId, results) {
 function updateToggleButtonState(button, isActive) {
   if (isActive) {
     button.classList.add('active');
-    button.querySelector('.button-toggle-icon').textContent = '👁️✓';
+    const iconEl = button.querySelector('.button-toggle-icon');
+    if (iconEl) {
+      iconEl.innerHTML = '';
+      const eyeIcon = createEyeIcon(16, '#333');
+      const checkIcon = createCheckIcon(16, '#4caf50');
+      iconEl.appendChild(eyeIcon);
+      iconEl.appendChild(checkIcon);
+    }
   } else {
     button.classList.remove('active');
-    button.querySelector('.button-toggle-icon').textContent = '👁️';
+    const iconEl = button.querySelector('.button-toggle-icon');
+    if (iconEl) {
+      iconEl.innerHTML = '';
+      iconEl.appendChild(createEyeIcon(16, '#333'));
+    }
   }
 }
 

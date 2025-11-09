@@ -22,7 +22,7 @@ function toggleKeyboardVisualization(testId, isActive, showHidden = false) {
     `, (result, isException) => {
       const infoElement = document.getElementById(`test-${testId}-info`);
       if (infoElement) {
-        infoElement.textContent = 'ℹ️ Visualisation désactivée';
+        infoElement.innerHTML = replaceEmojisInMessage('ℹ️ Visualisation désactivée');
         infoElement.className = 'auto-check';
       }
     });
@@ -438,7 +438,7 @@ function toggleKeyboardVisualization(testId, isActive, showHidden = false) {
     
     // Si result contient une erreur, la traiter
     if (result && result.error) {
-      infoElement.textContent = '✗ ' + t('errorVisualization') + ': ' + result.error;
+      infoElement.innerHTML = replaceEmojisInMessage('✗ ' + t('errorVisualization') + ': ' + result.error);
       infoElement.className = 'auto-check failed';
       return;
     }
@@ -477,7 +477,7 @@ function toggleKeyboardVisualization(testId, isActive, showHidden = false) {
         errorMessage = t('errorInjectedScript');
       }
       
-      infoElement.textContent = '✗ ' + t('errorVisualization') + ': ' + errorMessage;
+      infoElement.innerHTML = replaceEmojisInMessage('✗ ' + t('errorVisualization') + ': ' + errorMessage);
       infoElement.className = 'auto-check failed';
       
       // Log minimal pour le débogage (sans passer l'objet directement)
@@ -488,7 +488,7 @@ function toggleKeyboardVisualization(testId, isActive, showHidden = false) {
     // Traiter le résultat
     if (result) {
       if (result.active === true) {
-        let message = `✓ ${t('testKeyboardNavigationActive')}: ${result.count || 0} ${t('testKeyboardNavigationDisplayedCount')}`;
+        let message = replaceEmojisInMessage(`✓ ${t('testKeyboardNavigationActive')}: ${result.count || 0} ${t('testKeyboardNavigationDisplayedCount')}`);
         if (result.totalCount && result.totalCount > result.count) {
           message += ' ' + t('testKeyboardNavigationTotalCount', { total: result.totalCount });
         }
@@ -497,15 +497,15 @@ function toggleKeyboardVisualization(testId, isActive, showHidden = false) {
         } else if (result.totalCount && result.totalCount > result.count) {
           message += ` (${result.totalCount - result.count} ${t('testKeyboardNavigationHiddenNotDisplayed')})`;
         }
-        infoElement.textContent = message;
+        infoElement.innerHTML = message;
         infoElement.className = 'auto-check passed';
       } else if (result.error) {
         // Le script a retourné une erreur
-        infoElement.textContent = '✗ ' + t('errorVisualization') + ': ' + String(result.error);
+        infoElement.innerHTML = replaceEmojisInMessage('✗ ' + t('errorVisualization') + ': ' + String(result.error));
         infoElement.className = 'auto-check failed';
       } else {
         // Résultat inattendu
-        infoElement.textContent = 'ℹ️ ' + t('testKeyboardNavigationInactive');
+        infoElement.innerHTML = replaceEmojisInMessage('ℹ️ ' + t('testKeyboardNavigationInactive'));
         infoElement.className = 'auto-check';
       }
     } else {

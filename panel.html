@@ -97,9 +97,33 @@
       border-bottom: 1px solid #1976d2;
     }
     
+    .category-header > span:first-child {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
     .category-icon {
-      margin-right: 8px;
-      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .category-icon svg {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+    
+    /* Assurer un bon contraste pour les icônes de catégories en light mode */
+    .category-icon svg path {
+      stroke: #333;
+    }
+    
+    /* Assurer un bon contraste pour l'icône du header en light mode */
+    #header-icon svg path {
+      stroke: #1a1a1a;
     }
     
     .category-arrow {
@@ -740,11 +764,16 @@
     }
     
     .stat {
-      padding: 8px 12px;
+      padding: 12px 12px;
       background: #f5f5f5;
       border-radius: 4px;
       flex: 1;
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 70px;
     }
     
     .pie-chart-container {
@@ -764,15 +793,82 @@
       display: inline-block;
     }
     
+    .stat-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 4px;
+      line-height: 1;
+    }
+    
+    .stat-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      line-height: 1;
+    }
+    
+    .stat-icon svg {
+      width: 20px;
+      height: 20px;
+      display: block;
+      flex-shrink: 0;
+      vertical-align: middle;
+    }
+    
+    /* Assurer un bon contraste pour les icônes de statistiques en light mode */
+    .stat-icon svg path {
+      stroke: currentColor;
+    }
+    
+    /* Couleurs spécifiques pour les icônes de statistiques en light mode */
+    #stat-icon-total svg path,
+    #stat-icon-total-scores svg path {
+      stroke: #333;
+    }
+    
+    #stat-icon-passed svg path,
+    #stat-icon-passed-scores svg path {
+      stroke: #4caf50;
+    }
+    
+    #stat-icon-failed svg path,
+    #stat-icon-failed-scores svg path {
+      stroke: #f44336;
+    }
+    
+    #stat-icon-not-applicable svg path,
+    #stat-icon-not-applicable-scores svg path {
+      stroke: #616161;
+    }
+    
+    #stat-icon-score svg path,
+    #stat-icon-score-scores svg path {
+      stroke: #1976d2;
+    }
+    
     .stat-value {
       font-size: 18px;
       font-weight: bold;
-      margin-bottom: 4px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
     }
     
     .stat-label {
-      color: #666;
+      color: #333;
       font-size: 11px;
+      text-align: center;
+      font-weight: 500;
+    }
+    
+    /* Amélioration du contraste pour les valeurs "Non applicables" */
+    .stat-value[style*="color: #9e9e9e"] {
+      color: #616161 !important;
     }
     
     /* Analyse de la hiérarchie des titres */
@@ -1031,13 +1127,29 @@
     }
     
     .summary-na {
-      color: #9e9e9e;
+      color: #616161;
       background: #f5f5f5;
+      font-weight: 600;
+    }
+    
+    /* Amélioration du contraste pour OK et KO en light mode */
+    .summary-ok {
+      font-weight: 600;
+    }
+    
+    .summary-ko {
+      font-weight: 600;
     }
     
     .summary-pending {
       color: #999;
       background: #fafafa;
+    }
+    
+    /* Amélioration du contraste pour le score en light mode */
+    #scoreValue[style*="color: #1976d2"],
+    #scoreValueScores[style*="color: #1976d2"] {
+      color: #1565c0 !important;
     }
     
     /* Onglets */
@@ -1089,12 +1201,633 @@
     .tab-content.active {
       display: block;
     }
+    
+    /* ============================================
+       DARK MODE - Détection de la préférence système
+       ============================================ */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: #1e1e1e;
+        color: #e0e0e0;
+      }
+      
+      h1 {
+        color: #ffffff;
+      }
+      
+      #header-icon svg {
+        color: #ffffff;
+      }
+      
+      #header-icon svg path {
+        stroke: #ffffff !important;
+      }
+      
+      #version-display {
+        color: #b0b0b0;
+      }
+      
+      .status {
+        background: #2d4a2d;
+        border-left-color: #4caf50;
+      }
+      
+      .status.active {
+        background: #4a3d1f;
+        border-left-color: #ff9800;
+      }
+      
+      .button {
+        background: #1976d2;
+        color: white;
+      }
+      
+      .button:hover {
+        background: #1565c0;
+      }
+      
+      .button.secondary {
+        background: #616161;
+      }
+      
+      .button.secondary:hover {
+        background: #757575;
+      }
+      
+      .category {
+        border: 1px solid #3a3a3a;
+      }
+      
+      .category-header {
+        background: #2a2a2a;
+        border-bottom: 1px solid #3a3a3a;
+      }
+      
+      .category-header:hover {
+        background: #333333;
+      }
+      
+      .category-header.active {
+        background: #1a3a5a;
+        border-bottom: 1px solid #1976d2;
+      }
+      
+      .category-content {
+        background: #252525;
+      }
+      
+      .test-item {
+        background: #2a2a2a;
+        border-left: 3px solid #444;
+      }
+      
+      .test-description {
+        color: #d0d0d0;
+      }
+      
+      .test-results {
+        border-top: 1px solid #3a3a3a;
+      }
+      
+      .element-size {
+        color: #b0b0b0;
+      }
+      
+      .element-tags {
+        color: #d0d0d0;
+      }
+      
+      .empty-state {
+        color: #b0b0b0;
+      }
+      
+      .auto-check {
+        color: #d0d0d0;
+      }
+      
+      .auto-check.passed {
+        color: #81c784;
+      }
+      
+      .auto-check.failed {
+        color: #e57373;
+      }
+      
+      .auto-check.warning {
+        color: #ffb74d;
+      }
+      
+      .button-small {
+        background: #1976d2;
+        color: white;
+      }
+      
+      .button-small:hover {
+        background: #1565c0;
+      }
+      
+      .page-title-detected,
+      .language-detected {
+        background-color: #2a2a2a;
+        color: #e0e0e0;
+      }
+      
+      .popin-overlay {
+        background-color: rgba(0, 0, 0, 0.7);
+      }
+      
+      .popin-modal {
+        background: #2a2a2a;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      }
+      
+      .popin-header {
+        border-bottom: 1px solid #3a3a3a;
+        color: #ffffff;
+      }
+      
+      .popin-close {
+        color: #b0b0b0;
+      }
+      
+      .popin-close:hover {
+        background-color: #3a3a3a;
+        color: #ffffff;
+      }
+      
+      .popin-body {
+        color: #d0d0d0;
+      }
+      
+      .popin-footer {
+        border-top: 1px solid #3a3a3a;
+      }
+      
+      .test-documentation {
+        border-top: 1px solid #3a3a3a;
+      }
+      
+      .doc-toggle {
+        color: #64b5f6;
+      }
+      
+      .doc-toggle:hover {
+        color: #90caf9;
+      }
+      
+      .doc-content {
+        background: #2a2a2a;
+        border-left: 3px solid #1976d2;
+      }
+      
+      .doc-section-title {
+        color: #ffffff;
+      }
+      
+      .doc-section-content {
+        color: #d0d0d0;
+      }
+      
+      .doc-section-content a {
+        color: #64b5f6;
+      }
+      
+      .doc-section-content a:hover {
+        color: #90caf9;
+      }
+      
+      .doc-section-content code {
+        background: #1a1a1a;
+        color: #ffffff;
+      }
+      
+      .summary-table {
+        border: 1px solid #3a3a3a;
+      }
+      
+      .summary-table th {
+        background: #2a2a2a;
+        border-bottom: 2px solid #3a3a3a;
+        color: #ffffff;
+      }
+      
+      .summary-table td {
+        border-bottom: 1px solid #3a3a3a;
+      }
+      
+      .summary-table tr:hover {
+        background: #333333;
+      }
+      
+      .pie-chart-container {
+        background: #2a2a2a !important;
+      }
+      
+      /* Amélioration du contraste pour le titre "Répartition des résultats" */
+      .pie-chart-container > div:first-child > div:first-child {
+        color: #ffffff !important;
+      }
+      
+      /* Amélioration du contraste pour la légende du pie chart */
+      #pieChartLegend {
+        color: #ffffff !important;
+      }
+      
+      #pieChartLegend span {
+        color: #ffffff !important;
+      }
+      
+      .pie-chart-legend-item {
+        color: #ffffff !important;
+      }
+      
+      .pie-chart-legend-item span {
+        color: #ffffff !important;
+      }
+      
+      /* Amélioration du contraste pour les résultats du tableau en dark mode */
+      .summary-ok {
+        color: #81c784 !important;
+        background: #1b5e20 !important;
+        font-weight: 600;
+      }
+      
+      .summary-ko {
+        color: #ffcdd2 !important;
+        background: #b71c1c !important;
+        font-weight: 600;
+      }
+      
+      .summary-na {
+        color: #e0e0e0 !important;
+        background: #424242 !important;
+        font-weight: 600;
+      }
+      
+      .summary-pending {
+        color: #b0b0b0 !important;
+        background: #2a2a2a !important;
+      }
+      
+      /* Amélioration du contraste pour les cellules du tableau */
+      .summary-table td {
+        color: #e0e0e0;
+      }
+      
+      .summary-table tbody tr {
+        background: #2a2a2a;
+      }
+      
+      .summary-table tbody tr:hover {
+        background: #333333;
+      }
+      
+      .stats {
+        background: #252525;
+      }
+      
+      .stat {
+        background: #2a2a2a;
+        border-right: 1px solid #3a3a3a;
+      }
+      
+      .stat-label {
+        color: #d0d0d0;
+        font-weight: 500;
+      }
+      
+      /* Amélioration du contraste pour les valeurs en dark mode */
+      .stat-value {
+        color: #ffffff;
+      }
+      
+      /* Valeurs spécifiques avec meilleur contraste */
+      .stat-value[style*="color: #4caf50"] {
+        color: #81c784 !important;
+      }
+      
+      .stat-value[style*="color: #f44336"] {
+        color: #e57373 !important;
+      }
+      
+      .stat-value[style*="color: #9e9e9e"] {
+        color: #bdbdbd !important;
+      }
+      
+      .stat-value[style*="color: #1976d2"] {
+        color: #64b5f6 !important;
+      }
+      
+      /* Amélioration du contraste pour les scores selon leur valeur en dark mode */
+      .stat-value[style*="color: #8bc34a"] {
+        color: #a5d6a7 !important;
+      }
+      
+      .stat-value[style*="color: #ff9800"] {
+        color: #ffb74d !important;
+      }
+      
+      /* Amélioration du contraste pour les icônes SVG */
+      .stat-icon svg {
+        opacity: 1;
+      }
+      
+      .stat-icon svg path {
+        stroke: currentColor;
+      }
+      
+      /* Forcer les couleurs des icônes de statistiques en dark mode */
+      #stat-icon-total svg path,
+      #stat-icon-total-scores svg path {
+        stroke: #ffffff !important;
+      }
+      
+      #stat-icon-passed svg path,
+      #stat-icon-passed-scores svg path {
+        stroke: #81c784 !important;
+      }
+      
+      #stat-icon-failed svg path,
+      #stat-icon-failed-scores svg path {
+        stroke: #e57373 !important;
+      }
+      
+      #stat-icon-not-applicable svg path,
+      #stat-icon-not-applicable-scores svg path {
+        stroke: #bdbdbd !important;
+      }
+      
+      #stat-icon-score svg path,
+      #stat-icon-score-scores svg path {
+        stroke: #64b5f6 !important;
+      }
+      
+      /* Amélioration du contraste pour les icônes de catégories */
+      .category-icon svg path {
+        stroke: #ffffff !important;
+      }
+      
+      /* Amélioration du contraste pour les textes des catégories */
+      .category-header {
+        color: #ffffff;
+      }
+      
+      .test-name {
+        color: #ffffff;
+      }
+      
+      .category-arrow {
+        color: #b0b0b0;
+      }
+      
+      /* Amélioration du contraste pour le compteur de progression */
+      .category-progress-counter {
+        color: #ffffff !important;
+      }
+      
+      .category-progress-counter[style*="color: #4caf50"] {
+        color: #81c784 !important;
+      }
+      
+      .tabs {
+        border-bottom: 1px solid #3a3a3a;
+      }
+      
+      .tab-button {
+        color: #d0d0d0;
+      }
+      
+      .tab-button:hover {
+        color: #64b5f6;
+        background: #2a2a2a;
+      }
+      
+      .tab-button.active {
+        color: #64b5f6;
+        border-bottom-color: #64b5f6;
+      }
+      
+      #version-display {
+        color: #d0d0d0;
+      }
+      
+      /* Amélioration du contraste pour tous les textes */
+      .test-results {
+        color: #e0e0e0;
+      }
+      
+      .checkbox-label {
+        color: #e0e0e0;
+      }
+      
+      .validation-option label {
+        color: #e0e0e0;
+      }
+      
+      .pie-chart-legend-item {
+        color: #e0e0e0;
+      }
+      
+      .contrast-summary-title {
+        color: #ffffff;
+      }
+      
+      .element-info {
+        color: #e0e0e0;
+      }
+    }
+    
+    /* ============================================
+       RESPONSIVE DESIGN
+       ============================================ */
+    @media (max-width: 768px) {
+      body {
+        padding: 15px;
+        font-size: 12px;
+      }
+      
+      h1 {
+        font-size: 16px;
+        margin-bottom: 15px;
+      }
+      
+      .stats {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      
+      .stat {
+        flex: 1 1 calc(50% - 10px);
+        min-width: 120px;
+        padding: 10px 8px;
+      }
+      
+      .stat-value {
+        font-size: 16px;
+      }
+      
+      .stat-label {
+        font-size: 10px;
+      }
+      
+      .button {
+        padding: 8px 16px;
+        font-size: 13px;
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+      }
+      
+      .button-small {
+        padding: 5px 10px;
+        font-size: 12px;
+      }
+      
+      .category-header {
+        padding: 10px 12px;
+        font-size: 13px;
+      }
+      
+      .test-item {
+        padding: 12px;
+      }
+      
+      .test-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      
+      .test-validation {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      
+      .tabs-list {
+        flex-wrap: wrap;
+      }
+      
+      .tab-button {
+        padding: 10px 15px;
+        font-size: 13px;
+      }
+      
+      .popin-modal {
+        width: 95%;
+        max-height: 90vh;
+      }
+      
+      .summary-table {
+        font-size: 11px;
+      }
+      
+      .summary-table th,
+      .summary-table td {
+        padding: 8px 6px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+        font-size: 11px;
+      }
+      
+      h1 {
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
+      
+      .stats {
+        flex-direction: column;
+      }
+      
+      .stat {
+        flex: 1 1 100%;
+        border-right: none;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 12px 10px;
+      }
+      
+      @media (prefers-color-scheme: dark) {
+        .stat {
+          border-bottom: 1px solid #3a3a3a;
+        }
+      }
+      
+      .stat:last-child {
+        border-bottom: none;
+      }
+      
+      .stat-row {
+        gap: 6px;
+      }
+      
+      .stat-value {
+        font-size: 14px;
+      }
+      
+      .stat-label {
+        font-size: 9px;
+      }
+      
+      .category-header {
+        padding: 8px 10px;
+        font-size: 12px;
+      }
+      
+      .test-item {
+        padding: 10px;
+      }
+      
+      .test-name {
+        font-size: 13px;
+      }
+      
+      .test-description {
+        font-size: 11px;
+      }
+      
+      .tab-button {
+        padding: 8px 12px;
+        font-size: 12px;
+      }
+      
+      .summary-table {
+        font-size: 10px;
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      
+      .summary-table thead,
+      .summary-table tbody,
+      .summary-table tr {
+        display: block;
+      }
+      
+      .summary-table th,
+      .summary-table td {
+        display: block;
+        text-align: left;
+        padding: 8px;
+        border-bottom: 1px solid #3a3a3a;
+      }
+      
+      .summary-table th {
+        border-bottom: 2px solid #3a3a3a;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-      <h1 style="margin: 0;">🔍 Diagnostic Flash RGAA</h1>
+      <h1 style="margin: 0; display: flex; align-items: center; gap: 8px;">
+        <span id="header-icon" style="display: flex; align-items: center;"></span>
+        Diagnostic Flash RGAA
+      </h1>
       <span id="version-display" style="font-size: 11px; color: #666; font-weight: normal;">v<span id="version-number">-</span></span>
     </div>
     
@@ -1114,23 +1847,38 @@
     <div class="tab-content active" id="tab-audit">
       <div class="stats" id="stats">
         <div class="stat">
-          <div class="stat-value" id="totalTests">0</div>
+          <div class="stat-row">
+            <div class="stat-icon" id="stat-icon-total"></div>
+            <div class="stat-value" id="totalTests">0</div>
+          </div>
           <div class="stat-label" data-i18n="statsTotal">Total</div>
         </div>
         <div class="stat">
-          <div class="stat-value" id="passedTests" style="color: #4caf50;">0</div>
+          <div class="stat-row">
+            <div class="stat-icon" id="stat-icon-passed"></div>
+            <div class="stat-value" id="passedTests" style="color: #4caf50;">0</div>
+          </div>
           <div class="stat-label" data-i18n="statsPassed">Réussis</div>
         </div>
         <div class="stat">
-          <div class="stat-value" id="failedTests" style="color: #f44336;">0</div>
+          <div class="stat-row">
+            <div class="stat-icon" id="stat-icon-failed"></div>
+            <div class="stat-value" id="failedTests" style="color: #f44336;">0</div>
+          </div>
           <div class="stat-label" data-i18n="statsFailed">Échoués</div>
         </div>
         <div class="stat">
-          <div class="stat-value" id="notApplicableTests" style="color: #9e9e9e;">0</div>
+          <div class="stat-row">
+            <div class="stat-icon" id="stat-icon-not-applicable"></div>
+            <div class="stat-value" id="notApplicableTests" style="color: #9e9e9e;">0</div>
+          </div>
           <div class="stat-label" data-i18n="statsNotApplicable">Non applicables</div>
         </div>
-        <div class="stat" style="border-left: 2px solid #e0e0e0; padding-left: 15px; margin-left: 10px;">
-          <div class="stat-value" id="scoreValue" style="color: #1976d2; font-size: 24px; font-weight: bold;">0</div>
+        <div class="stat">
+          <div class="stat-row">
+            <div class="stat-icon" id="stat-icon-score"></div>
+            <div class="stat-value" id="scoreValue" style="color: #1976d2; font-size: 24px; font-weight: bold;">0</div>
+          </div>
           <div class="stat-label" data-i18n="statsScore">Score / 100</div>
         </div>
       </div>
@@ -1141,7 +1889,7 @@
         <div class="category" data-category="navigation">
           <div class="category-header" data-category-toggle="navigation">
             <span>
-              <span class="category-icon">🧭</span>
+              <span class="category-icon" id="category-icon-navigation"></span>
               <span data-i18n="categoryNavigation">Navigation & utilisation</span>
             </span>
             <span class="category-arrow">▶</span>
@@ -1154,7 +1902,7 @@
         <div class="category" data-category="langage">
           <div class="category-header" data-category-toggle="langage">
             <span>
-              <span class="category-icon">🌐</span>
+              <span class="category-icon" id="category-icon-langage"></span>
               <span data-i18n="categoryLangage">Langage & interface</span>
             </span>
             <span class="category-arrow">▶</span>
@@ -1167,7 +1915,7 @@
         <div class="category" data-category="structuration">
           <div class="category-header" data-category-toggle="structuration">
             <span>
-              <span class="category-icon">📋</span>
+              <span class="category-icon" id="category-icon-structuration"></span>
               <span data-i18n="categoryStructuration">Structuration de l'information</span>
             </span>
             <span class="category-arrow">▶</span>
@@ -1181,31 +1929,52 @@
     
     <!-- Onglet Scores -->
     <div class="tab-content" id="tab-scores">
-      <div class="stats" id="stats-scores">
+      <div class="stats" id="stats-scores" style="position: relative;">
         <div class="stat">
-          <div class="stat-value" id="totalTestsScores">0</div>
+          <div class="stat-row">
+            <div class="stat-icon" id="stat-icon-total-scores"></div>
+            <div class="stat-value" id="totalTestsScores">0</div>
+          </div>
           <div class="stat-label" data-i18n="statsTotal">Total</div>
         </div>
         <div class="stat">
-          <div class="stat-value" id="passedTestsScores" style="color: #4caf50;">0</div>
+          <div class="stat-row">
+            <div class="stat-icon" id="stat-icon-passed-scores"></div>
+            <div class="stat-value" id="passedTestsScores" style="color: #4caf50;">0</div>
+          </div>
           <div class="stat-label" data-i18n="statsPassed">Réussis</div>
         </div>
         <div class="stat">
-          <div class="stat-value" id="failedTestsScores" style="color: #f44336;">0</div>
+          <div class="stat-row">
+            <div class="stat-icon" id="stat-icon-failed-scores"></div>
+            <div class="stat-value" id="failedTestsScores" style="color: #f44336;">0</div>
+          </div>
           <div class="stat-label" data-i18n="statsFailed">Échoués</div>
         </div>
         <div class="stat">
-          <div class="stat-value" id="notApplicableTestsScores" style="color: #9e9e9e;">0</div>
+          <div class="stat-row">
+            <div class="stat-icon" id="stat-icon-not-applicable-scores"></div>
+            <div class="stat-value" id="notApplicableTestsScores" style="color: #9e9e9e;">0</div>
+          </div>
           <div class="stat-label" data-i18n="statsNotApplicable">Non applicables</div>
         </div>
-        <div class="stat" style="border-left: 2px solid #e0e0e0; padding-left: 15px; margin-left: 10px;">
-          <div class="stat-value" id="scoreValueScores" style="color: #1976d2; font-size: 24px; font-weight: bold;">0</div>
+        <div class="stat">
+          <div class="stat-row">
+            <div class="stat-icon" id="stat-icon-score-scores"></div>
+            <div class="stat-value" id="scoreValueScores" style="color: #1976d2; font-size: 24px; font-weight: bold;">0</div>
+          </div>
           <div class="stat-label" data-i18n="statsScore">Score / 100</div>
         </div>
+        <button class="button-small" id="downloadStatsBtn" style="position: absolute; top: 0; right: 0; font-size: 18px; padding: 8px 12px; line-height: 1; display: flex; align-items: center; justify-content: center; min-width: 40px; min-height: 40px;" title="Télécharger les statistiques (PNG transparent)" aria-label="Télécharger la grille de statistiques au format PNG transparent"></button>
       </div>
       
       <div class="pie-chart-container" style="margin-bottom: 15px; padding: 15px; background: #f5f5f5; border-radius: 4px; text-align: center;">
-        <div style="font-size: 13px; font-weight: 600; margin-bottom: 10px;" data-i18n="statsDistribution">Répartition des résultats</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <div style="font-size: 13px; font-weight: 600;" data-i18n="statsDistribution">Répartition des résultats</div>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <button class="button-small" id="downloadChartBtn" style="font-size: 18px; padding: 8px 12px; line-height: 1; display: flex; align-items: center; justify-content: center; min-width: 40px; min-height: 40px;" title="Télécharger (PNG transparent)" aria-label="Télécharger le diagramme au format PNG transparent"></button>
+          </div>
+        </div>
         <svg id="pieChart" width="200" height="200" style="display: block; margin: 0 auto;">
           <circle cx="100" cy="100" r="80" fill="#e0e0e0" stroke="#fff" stroke-width="2"/>
         </svg>
@@ -1234,6 +2003,7 @@
   
   <!-- Modules utilitaires -->
   <script src="utils/i18n.js"></script>
+  <script src="utils/icons.js"></script>
   <script src="utils/cleanup.js"></script>
   <script src="utils/stats.js"></script>
   <script src="utils/ui.js"></script>

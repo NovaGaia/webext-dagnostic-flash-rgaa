@@ -15,13 +15,13 @@ function testResponsiveDesign() {
     <div class="test-description">${t('testResponsiveDesignDesc')}</div>
     <div class="test-results" id="test-${testId}-results">
       <div class="auto-check" id="test-${testId}-viewport">
-        ${t('testResponsiveDesignCheckViewport')}
+        ${replaceEmojisInMessage(t('testResponsiveDesignCheckViewport'))}
       </div>
       <div class="auto-check" id="test-${testId}-overflow">
-        ${t('testResponsiveDesignCheckOverflow')}
+        ${replaceEmojisInMessage(t('testResponsiveDesignCheckOverflow'))}
       </div>
       <div class="auto-check" id="test-${testId}-elements">
-        ${t('testResponsiveDesignCheckElements')}
+        ${replaceEmojisInMessage(t('testResponsiveDesignCheckElements'))}
       </div>
     </div>
     <div class="test-actions">
@@ -176,7 +176,7 @@ function updateCheckResult(testId, checkType, passed, message) {
   const checkElement = document.getElementById(`test-${testId}-${checkType}`);
   if (checkElement) {
     checkElement.className = `auto-check ${passed ? 'passed' : (checkType === 'overflow' ? 'warning' : 'failed')}`;
-    checkElement.textContent = message;
+    checkElement.innerHTML = replaceEmojisInMessage(message);
   }
 }
 

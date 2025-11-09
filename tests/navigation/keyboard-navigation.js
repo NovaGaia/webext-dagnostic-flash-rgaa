@@ -14,7 +14,7 @@ function testKeyboardNavigation() {
     <div class="test-description">${t('testKeyboardNavigationDesc')}</div>
     <div class="test-results" id="test-${testId}-results">
       <div class="auto-check" id="test-${testId}-info">
-        ${t('testKeyboardNavigationInfo')}
+        ${replaceEmojisInMessage(t('testKeyboardNavigationInfo'))}
       </div>
     </div>
     <div class="test-actions">

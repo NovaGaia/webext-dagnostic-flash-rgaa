@@ -14,13 +14,13 @@ function testTextResize() {
     <div class="test-description">${t('testTextResizeDesc')}</div>
     <div class="test-results" id="test-${testId}-results">
       <div class="auto-check" id="test-${testId}-viewport">
-        ${t('testTextResizeCheckViewport')}
+        ${replaceEmojisInMessage(t('testTextResizeCheckViewport'))}
       </div>
       <div class="auto-check" id="test-${testId}-units">
-        ${t('testTextResizeCheckUnits')}
+        ${replaceEmojisInMessage(t('testTextResizeCheckUnits'))}
       </div>
       <div class="auto-check" id="test-${testId}-overflow">
-        ${t('testTextResizeCheckOverflow')}
+        ${replaceEmojisInMessage(t('testTextResizeCheckOverflow'))}
       </div>
     </div>
     <div class="test-actions">
@@ -190,7 +190,7 @@ function updateTextResizeCheckResult(testId, checkType, passed, message) {
   const checkElement = document.getElementById(`test-${testId}-${checkType}`);
   if (checkElement) {
     checkElement.className = `auto-check ${passed ? 'passed' : 'warning'}`;
-    checkElement.textContent = message;
+    checkElement.innerHTML = replaceEmojisInMessage(message);
   }
 }
 

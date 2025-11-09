@@ -57,6 +57,21 @@ pnpm run generate-icons
 5. Les tests s'exécutent automatiquement au chargement
 6. Validez manuellement chaque test selon les critères RGAA
 
+### Accès rapide
+
+- **Menu contextuel** : Clic droit sur la page → "Ouvrir Diagnostic Flash RGAA"
+- **Icône de l'extension** : Cliquez sur l'icône dans la barre d'outils
+
+> **Note** : L'ouverture programmatique des DevTools est limitée par les navigateurs. Une notification vous indiquera le raccourci clavier à utiliser selon votre système d'exploitation.
+
+## ✨ Fonctionnalités
+
+- **Dark mode** : Détection automatique de la préférence système, adaptation complète des couleurs
+- **Responsive design** : Interface adaptée aux tablettes et mobiles
+- **Export des résultats** : Téléchargement du diagramme circulaire et de la grille de statistiques en PNG
+- **Visualisations interactives** : Analyse des champs de formulaire et des alternatives textuelles avec mise en évidence visuelle
+- **Système d'icônes SVG** : Interface cohérente avec des icônes Heroicons
+
 ## 📦 Versioning et Releases
 
 Ce projet utilise [Changesets](https://github.com/changesets/changesets) pour gérer le versioning et les releases automatiques.

@@ -160,6 +160,72 @@ Extension navigateur (Chrome/Firefox) pour réaliser le diagnostic flash d'acces
 - Styles CSS pour les couleurs et la mise en forme
 - Une ligne par test (15 tests au total)
 
+### 6.1. Export du diagramme circulaire en PNG
+
+**Fichiers modifiés** : `utils/stats.js`, `panel.html`, `panel.js`, `utils/i18n.js`
+
+**Fonctionnalité ajoutée** : Bouton d'export pour télécharger le diagramme circulaire :
+- **Télécharger (PNG transparent)** : Télécharge le diagramme avec la légende au format PNG avec fond transparent
+
+**Implémentation** :
+- **Légende incluse dans l'export** :
+  - La légende est maintenant incluse dans l'export avec les pourcentages et nombres de critères
+  - Format : `{Label}: {nombre} ({pourcentage}%)` (ex: "Réussis: 5 (33%)")
+  - Les données de la légende sont stockées dans l'attribut `data-legend` du SVG
+- **Fonction `createExportSVG()`** :
+  - Crée un SVG complet avec diagramme et légende
+  - Paramètre `includeBackground` pour choisir le fond (false = transparent pour le téléchargement)
+  - La légende est rendue en SVG avec carrés de couleur et texte
+- **Fonction `downloadChartAsPNG()`** :
+  - Télécharge le diagramme avec légende au format PNG transparent
+  - Affiche un message de succès sur le bouton
+- **Affichage de la légende** :
+  - La légende dans l'interface affiche maintenant les pourcentages : `{Label}: {nombre} ({pourcentage}%)`
+- Gestion des erreurs avec affichage visuel sur les boutons
+
+**Traductions ajoutées** :
+- `statsDownloadChart` : "Télécharger (PNG transparent)" / "Download (transparent PNG)"
+- `statsDownloadChartSuccess` : "Diagramme téléchargé !" / "Chart downloaded!"
+- `statsExportChartError` : "Erreur lors de l'export du diagramme" / "Error exporting chart"
+
+**Améliorations de l'interface** :
+- **Bouton avec icône Heroicons** : Le bouton d'export utilise maintenant une icône SVG Heroicons (ArrowDownTray) au lieu d'emoji
+- **Taille et lisibilité améliorées** : Boutons agrandis (40x40px minimum) avec icônes blanches (20px) sur fond bleu pour meilleur contraste
+- **Messages de feedback** : Les messages de succès/erreur sont affichés dans l'attribut `title` du bouton (tooltip) au lieu de modifier le texte
+
+**Corrections apportées** :
+- **Gestion d'erreur améliorée** : Les erreurs sont maintenant formatées correctement au lieu d'afficher `[object Object]` ou `[object DOMException]`
+- **Gestion d'erreur dans le nettoyage** : Correction de la gestion d'erreur dans `cleanupMediaAlternativesVisualization()` pour afficher des messages d'erreur descriptifs
+- **Suppression du copier-coller** : La fonctionnalité de copier-coller a été supprimée car elle était problématique dans les DevTools (permissions policy). Seul le téléchargement est disponible.
+
+### 6.2. Export de la grille de statistiques en PNG
+
+**Fichiers modifiés** : `utils/stats.js`, `panel.html`, `panel.js`
+
+**Fonctionnalité ajoutée** : Bouton d'export pour télécharger la grille de statistiques 2x2 au format PNG transparent.
+
+**Implémentation** :
+- **Fonction `createStatsGridSVG()`** :
+  - Crée un SVG avec uniquement la grille de statistiques 2x2
+  - Format : Score (en plus gros) | Réussis / Échoués | Non applicables
+  - Chaque cellule contient : icône SVG Heroicons (ChartBar, CheckCircle, XCircle, MinusCircle), valeur en gras, label
+  - Layout : icône et valeur sur la même ligne (ligne 1), label en dessous (ligne 2)
+  - Police sans-serif (Verdana) pour tous les textes
+  - Paramètre `includeBackground` pour choisir le fond (false = transparent)
+- **Fonction `downloadStatsAsPNG()`** :
+  - Télécharge la grille au format PNG transparent
+  - Affiche un message de succès dans le `title` du bouton
+- **Positionnement des éléments** :
+  - Ligne 1 : icône à gauche, valeur à droite (côte à côte)
+  - Ligne 2 : label centré en dessous
+  - Espacement vertical optimisé pour éviter les chevauchements
+  - Utilisation de `dominant-baseline: middle` pour l'alignement vertical
+
+**Bouton d'export** :
+- Positionné en haut à droite de la section des statistiques
+- Icône Heroicons ArrowDownTray (blanc, 20px)
+- Taille minimale : 40x40px pour meilleure lisibilité
+
 ### 7. Système d'onglets (Audit / Scores)
 
 **Fichiers modifiés** : `panel.html`, `panel.js`, `utils/stats.js`
@@ -167,18 +233,21 @@ Extension navigateur (Chrome/Firefox) pour réaliser le diagnostic flash d'acces
 **Fonctionnalité ajoutée** : Interface avec deux onglets pour organiser les fonctionnalités.
 
 **Onglet "Audit"** (ouvert par défaut) :
-- Section des compteurs (Total, Réussis, Échoués, Non applicables, Score)
+- Section des compteurs avec icônes Heroicons (Total, Réussis, Échoués, Non applicables, Score)
+  - Structure en deux lignes : Ligne 1 (icône + valeur), Ligne 2 (label)
 - Bouton "Réinitialiser tous les tests"
 - Les 3 catégories dépliables avec tous les tests, checkboxes et boutons d'analyse
 
 **Onglet "Scores"** :
-- Section des compteurs (identique à l'onglet Audit)
+- Section des compteurs avec icônes Heroicons (identique à l'onglet Audit)
+- Bouton d'export pour télécharger la grille de statistiques en PNG
 - Diagramme circulaire de répartition des résultats
 - Tableau récapitulatif (Critères / Résultat)
 
 **Implémentation** :
 - Structure d'onglets avec CSS (bordure active, hover, etc.)
 - Fonction `initTabs()` pour gérer le changement d'onglet
+- Fonction `initIcons()` pour injecter les icônes Heroicons dans la barre de statistiques
 - Compteurs synchronisés dans les deux onglets via `updateStats()`
 - Navigation fluide entre les onglets
 
@@ -242,7 +311,73 @@ Extension navigateur (Chrome/Firefox) pour réaliser le diagnostic flash d'acces
 - Fonction `getAccessibleName()` pour calculer le nom accessible selon les règles ARIA
 - Nettoyage intégré dans `cleanupAllVisualizations()`
 
-### 10. Migration vers pnpm dans les workflows GitHub
+### 10. Système d'icônes SVG Heroicons
+
+**Fichiers créés/modifiés** : `utils/icons.js`, `utils/stats.js`, `panel.html`, `panel.js`, tous les fichiers de tests, `utils/i18n.js`
+
+**Fonctionnalité ajoutée** : Remplacement complet de tous les emojis par des icônes SVG cohérentes basées sur Heroicons.
+
+**Icônes créées** :
+- **Catégories** : Compass (Navigation), Globe (Langage), Clipboard (Structuration)
+- **Actions** : ArrowDownTray (Téléchargement), MagnifyingGlass (Vérification), Eye (Visualisation)
+- **Statuts** : CheckCircle (✓), XCircle (✗), ExclamationTriangle (⚠, ▲), InformationCircle (ℹ️)
+- **Statistiques (barre de résultats)** : Hashtag (Total), ChartBar (Score), CheckCircle (Réussis), XCircle (Échoués), MinusCircle (Non applicables)
+
+**Implémentation** :
+- **Fichier `utils/icons.js`** : Bibliothèque centralisée de toutes les icônes Heroicons pour l'UI
+  - Fonction `createHeroIcon()` : Crée une icône SVG avec viewBox 24x24 uniforme
+  - Fonctions spécifiques pour chaque type d'icône (createNavigationIcon, createCheckIcon, createTotalIcon, createScoreIcon, etc.)
+  - Fonction `replaceEmojisInMessage()` : Remplace automatiquement les emojis dans les messages par des icônes SVG
+  - Fonction `createMessageWithIcons()` : Crée un élément DOM avec des icônes remplacées
+- **Fichier `utils/stats.js`** : Fonctions d'icônes pour l'export SVG (suffixe `ForExport`)
+  - `createScoreIconForExport()`, `createCheckIconForExport()`, `createCrossIconForExport()`, `createDashIconForExport()`
+  - Retournent un groupe SVG (`<g>`) pour l'intégration dans les exports SVG
+  - Résolution du conflit de noms avec `utils/icons.js` en utilisant des noms distincts
+- **Barre de statistiques restructurée** :
+  - Structure en deux lignes : Ligne 1 (icône + valeur côte à côte), Ligne 2 (label centré)
+  - Conteneur `.stat-row` avec `display: flex`, `align-items: center`, `gap: 8px`
+  - Icônes injectées dynamiquement dans `.stat-icon` via `initIcons()` dans `panel.js`
+  - Taille uniforme : toutes les icônes à 20px × 20px (CSS : `width: 20px`, `height: 20px`)
+  - Conteneur `.stat-icon` avec dimensions fixes pour garantir l'alignement
+- **Alignement des icônes dans les titres** :
+  - CSS amélioré avec `display: flex` et `align-items: center` sur le parent
+  - Utilisation de `gap: 8px` pour l'espacement
+  - Icônes parfaitement alignées verticalement avec le texte
+- **Remplacement dans tous les fichiers** :
+  - Templates HTML initiaux : tous les emojis remplacés avec `replaceEmojisInMessage()`
+  - Messages dynamiques : utilisation de `innerHTML` avec `replaceEmojisInMessage()` au lieu de `textContent`
+  - Traductions : les emojis dans `utils/i18n.js` sont remplacés dynamiquement lors de l'affichage
+- **Boutons d'export améliorés** :
+  - Taille augmentée : `min-width: 40px`, `min-height: 40px`
+  - Icônes blanches (20px) sur fond bleu pour meilleur contraste
+  - Padding augmenté : `8px 12px` pour meilleure zone de clic
+
+**Avantages** :
+- Style cohérent : toutes les icônes utilisent le même viewBox (24x24) et stroke-width (2)
+- Rendu vectoriel net à toutes les résolutions
+- Pas de dépendance externe : icônes intégrées directement dans le code
+- Homogénéité visuelle : toutes les icônes ont la même taille et le même style
+- Séparation claire entre icônes UI (`utils/icons.js`) et icônes export (`utils/stats.js`)
+
+**Emojis remplacés** :
+- 🧭 → Compass (Navigation)
+- 🌐 → Globe (Langage)
+- 📋 → Clipboard (Structuration)
+- 📥 → ArrowDownTray (Téléchargement)
+- 🔍 → MagnifyingGlass (Vérification)
+- 👁️ → Eye (Visualisation)
+- ✓ → CheckCircle (Succès)
+- ✗ → XCircle (Erreur)
+- ▲ → ExclamationTriangle (Avertissement)
+- ⚠ → ExclamationTriangle (Avertissement)
+- ℹ️ → InformationCircle (Information)
+
+**Corrections apportées** :
+- Résolution du conflit de noms entre `createScoreIcon()` dans `utils/icons.js` (pour l'UI) et `utils/stats.js` (pour l'export) en renommant les fonctions d'export avec le suffixe `ForExport`
+- Uniformisation de la taille des icônes dans la barre de statistiques (20px × 20px) avec CSS strict
+- Correction de l'affichage de l'icône Score qui était masquée par le conflit de noms
+
+### 11. Migration vers pnpm dans les workflows GitHub
 
 **Fichiers modifiés** : `.github/workflows/release.yml`, `.github/workflows/package.yml`, `.github/workflows/changesets.yml`, `package.json`
 
@@ -264,7 +399,7 @@ Extension navigateur (Chrome/Firefox) pour réaliser le diagnostic flash d'acces
 - Meilleure gestion des dépendances avec pnpm
 - Workflow changesets fonctionnel avec création correcte des PRs de version
 
-### 11. Mise à jour proactive de la documentation par l'IA
+### 12. Mise à jour proactive de la documentation par l'IA
 
 **Fichier créé** : `.cursor/rules`
 
@@ -272,23 +407,73 @@ Extension navigateur (Chrome/Firefox) pour réaliser le diagnostic flash d'acces
 
 **Mécanisme mis en place** :
 - Fichier `.cursor/rules` contenant des instructions claires pour l'IA
-- Règle critique : après chaque modification validée, l'IA DOIT mettre à jour la documentation
-- Instructions détaillées sur ce qui doit être documenté et quand
 
-**Principe** :
-- Après chaque modification validée, l'IA met automatiquement à jour la mémoire avec :
-  - Les nouvelles fonctionnalités ajoutées
-  - Les corrections importantes apportées
-  - Les changements de comportement
-  - Les problèmes résolus
-  - Les détails techniques importants
-- Mise à jour dans la même réponse où les modifications sont faites
-- Sans attendre que l'utilisateur le demande explicitement
+### 13. Dark mode, responsive design et menu contextuel
 
-**Avantages** :
-- Pas de scripts automatiques complexes : la mise à jour sémantique nécessite une compréhension du contexte
-- Documentation toujours à jour grâce aux règles dans `.cursor/rules`
-- Approche simple et efficace
+**Fichiers modifiés** : `panel.html`, `background.js`, `manifest.json`, `panel.js`
+
+**Fonctionnalités ajoutées** :
+
+1. **Dark mode avec détection de la préférence système** :
+   - Utilisation de `@media (prefers-color-scheme: dark)` pour détecter automatiquement le thème système
+   - Adaptation complète de tous les styles pour le dark mode :
+     - Arrière-plans sombres (#1e1e1e pour body, #2a2a2a pour les cartes)
+     - Textes clairs (#ffffff, #e0e0e0, #d0d0d0 selon les éléments)
+     - Couleurs des boutons, catégories, tests, tableaux adaptées
+     - Icônes SVG avec couleurs forcées en blanc pour un meilleur contraste
+   - Amélioration des contrastes pour tous les éléments :
+     - Labels de statistiques : #d0d0d0 (au lieu de #b0b0b0)
+     - Titres et noms de tests : #ffffff
+     - Compteur de progression des catégories : #ffffff
+     - Légende du pie chart : #ffffff
+     - Résultats du tableau (OK, KO, N/A) avec fonds colorés et textes clairs
+
+2. **Responsive design** :
+   - Media queries pour différentes tailles d'écran :
+     - `@media (max-width: 768px)` : Tablettes
+     - `@media (max-width: 480px)` : Mobiles
+   - Adaptations :
+     - Statistiques en colonnes sur mobile
+     - Boutons pleine largeur sur petits écrans
+     - Tableaux avec défilement horizontal
+     - Tailles de police ajustées
+     - Espacements optimisés
+     - Structure des tests en colonne sur mobile
+
+3. **Menu contextuel et action de barre d'outils** :
+   - **Menu contextuel** : Item "Ouvrir Diagnostic Flash RGAA" disponible sur clic droit
+   - **Action de barre d'outils** : Clic sur l'icône de l'extension
+   - **Limitation importante** : L'ouverture programmatique des DevTools est bloquée par les navigateurs pour des raisons de sécurité
+   - **Solution** : Affichage d'une notification avec instructions adaptées au système d'exploitation :
+     - Mac : `Cmd+Option+I`
+     - Windows/Linux : `F12` ou `Ctrl+Shift+I`
+   - Permissions ajoutées : `contextMenus`, `notifications`
+
+**Corrections de contraste apportées** :
+
+1. **Light mode** :
+   - Icônes de catégories : stroke #333 (gris foncé)
+   - Icônes de statistiques : couleurs spécifiques (#333, #4caf50, #f44336, #616161, #1976d2)
+   - Résultats N/A : couleur #616161 (au lieu de #9e9e9e) pour meilleur contraste
+   - Font-weight: 600 pour OK, KO, N/A
+
+2. **Dark mode** :
+   - Tous les textes : couleurs claires (#ffffff, #e0e0e0, #d0d0d0)
+   - Icônes SVG : couleurs forcées en blanc avec `!important`
+   - Résultats du tableau :
+     - OK : texte #81c784 sur fond #1b5e20
+     - KO : texte #ffcdd2 sur fond #b71c1c
+     - N/A : texte #e0e0e0 sur fond #424242
+   - Titre "Répartition des résultats" : #ffffff
+   - Légende du pie chart : #ffffff
+   - Fond du conteneur pie chart : #2a2a2a (forcé avec `!important`)
+
+**Améliorations techniques** :
+- Détection automatique du dark mode dans `initIcons()` pour adapter les couleurs des icônes
+- CSS avec `!important` pour forcer les couleurs en dark mode et surcharger les styles inline
+- Structure HTML améliorée pour l'alignement des icônes et valeurs dans les statistiques
+- Remplacement de l'emoji 🔍 dans le titre par une icône Heroicons SVG
+- Correction de l'alignement des cases de statistiques (suppression des styles inline border-left, padding-left, margin-left)
 
 ---
 
@@ -622,9 +807,10 @@ webext-dagnostic-flash-rgaa/
 │   └── icon-128.png
 ├── utils/
 │   ├── i18n.js               # Système de traduction
-│   ├── stats.js              # Gestion des statistiques
-│   ├── ui.js                 # Interface (catégories, documentation)
-│   └── cleanup.js            # Nettoyage des visualisations
+│   ├── icons.js            # Système d'icônes SVG Heroicons
+│   ├── stats.js            # Gestion des statistiques
+│   ├── ui.js               # Interface (catégories, documentation)
+│   └── cleanup.js          # Nettoyage des visualisations
 ├── tests/
 │   ├── navigation/
 │   │   ├── responsive-design.js
@@ -660,6 +846,8 @@ webext-dagnostic-flash-rgaa/
 - Badges RGAA : fond gris clair (#f0f0f0), coins arrondis
 - Documentation : fond gris clair (#f9f9f9) avec bordure gauche bleue
 - Tests : bordures colorées selon le statut (vert pour passé, rouge pour échoué)
+- **Dark mode** : Détection automatique via `prefers-color-scheme: dark`, adaptation complète des couleurs
+- **Responsive** : Media queries pour tablettes (768px) et mobiles (480px)
 
 ### Interactivité
 - Catégories collapsibles avec icône ▶/▼
@@ -721,6 +909,15 @@ webext-dagnostic-flash-rgaa/
 - ✅ Analyse des champs de formulaire avec visualisation des labels et inputs
 - ✅ Analyse des alternatives textuelles avec bulles d'information
 - ✅ Migration vers pnpm dans les workflows GitHub
+- ✅ Export du diagramme circulaire en PNG (téléchargement transparent)
+- ✅ Export de la grille de statistiques en PNG (2x2 avec pictogrammes)
+- ✅ Système d'icônes SVG Heroicons (remplacement complet des emojis)
+- ✅ Alignement parfait des icônes dans les titres de catégories
+- ✅ Boutons d'export améliorés (taille et lisibilité)
+- ✅ Dark mode avec détection automatique de la préférence système
+- ✅ Responsive design pour tablettes et mobiles
+- ✅ Menu contextuel (clic droit) et action de barre d'outils pour accès rapide
+- ✅ Amélioration des contrastes pour tous les éléments (light et dark mode)
 
 ---
 
@@ -732,16 +929,17 @@ Quand un test revient à "Non-testé", il est explicitement retiré du tableau `
 ### Ordre de chargement des scripts
 Dans `panel.html`, l'ordre est important :
 1. `utils/i18n.js` (d'abord pour que `t()` soit disponible)
-2. `utils/cleanup.js`, `utils/stats.js`, `utils/ui.js`
-3. `tests/navigation/keyboard-visualization.js` (visualisations)
-4. Modules contrastes (dans l'ordre de dépendance) :
+2. `utils/icons.js` (pour que les fonctions d'icônes soient disponibles)
+3. `utils/cleanup.js`, `utils/stats.js`, `utils/ui.js`
+4. `tests/navigation/keyboard-visualization.js` (visualisations)
+5. Modules contrastes (dans l'ordre de dépendance) :
    - `tests/langage/contrasts/utils.js`
    - `tests/langage/contrasts/analyze.js`
    - `tests/langage/contrasts/display.js`
    - `tests/langage/contrasts/highlight.js`
    - `tests/langage/contrasts/observer.js`
-5. Tous les tests
-6. `panel.js` (en dernier)
+6. Tous les tests
+7. `panel.js` (en dernier)
 
 ### IDs des éléments de documentation
 Pour chaque test, les IDs des sections sont :
