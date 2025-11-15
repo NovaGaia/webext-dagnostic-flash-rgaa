@@ -94,7 +94,11 @@ pnpm run generate-icons
 
 - **Dark mode** : Détection automatique de la préférence système, adaptation complète des couleurs
 - **Responsive design** : Interface adaptée aux tablettes et mobiles
-- **Export des résultats** : Téléchargement du diagramme circulaire et de la grille de statistiques en PNG
+- **Export des résultats** : 
+  - Téléchargement du diagramme circulaire (diagramme + légende) en PNG transparent
+  - Téléchargement de la grille de statistiques (score "X/100", répartition des résultats) en PNG transparent
+- **Options de validation** : Pour chaque critère, possibilité de marquer comme "Réussi", "Échoué", "Non applicable" ou "Dérogation"
+- **Statistiques détaillées** : Affichage séparé des dérogations dans les indicateurs de score et le diagramme circulaire
 - **Visualisations interactives** : Analyse des champs de formulaire et des alternatives textuelles avec mise en évidence visuelle
 - **Système d'icônes SVG** : Interface cohérente avec des icônes Heroicons
 - **Architecture modulaire** : Code organisé en modules séparés (CSS, visualisations, tests) pour une meilleure maintenabilité

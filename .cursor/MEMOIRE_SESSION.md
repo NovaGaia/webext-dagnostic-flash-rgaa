@@ -15,6 +15,59 @@ Extension navigateur (Chrome/Firefox) pour réaliser le diagnostic flash d'acces
 
 ## 🎯 Réalisations principales de cette session
 
+### 14. Ajout de l'option "Dérogation" et améliorations des exports (Session récente)
+
+**Fichiers modifiés** : Tous les fichiers de tests (`tests/**/*.js`), `utils/stats.js`, `panel.html`, `utils/i18n.js`, `utils/icons.js`, `panel.js`
+
+**Fonctionnalités ajoutées** :
+
+1. **Option "Dérogation" pour tous les critères** :
+   - Ajout d'une 5ème option radio "Dérogation" dans chaque test
+   - Statut `'derogation'` géré dans toutes les fonctions `updateXxxStatus()`
+   - Les dérogations sont traitées comme "Non applicable" pour le calcul du score (exclues du dénominateur)
+   - Style CSS `.test-item.not-applicable` réutilisé pour les dérogations
+
+2. **Affichage séparé des dérogations** :
+   - Compteur "Dérogations" séparé dans les statistiques (onglets Audit et Scores)
+   - Affichage distinct dans le diagramme circulaire avec couleur orange (`#ff9800`)
+   - Légende mise à jour pour afficher les dérogations séparément
+   - Tableau récapitulatif affichant "Dérogation" (au lieu de "N/A") pour les tests avec statut dérogation
+
+3. **Format du score "X/100" dans les exports** :
+   - Le score s'affiche maintenant au format "80/100" dans les exports PNG
+   - Le chiffre principal (ex: "80") en grande taille, "/100" en taille réduite (50%)
+   - Score sur 2 colonnes dans la grille d'export pour plus de visibilité
+
+4. **Améliorations du positionnement dans les exports** :
+   - Positionnement séquentiel (style flexbox) : icône → score → "/100"
+   - Espacements généreux pour éviter les chevauchements
+   - Calcul précis de la largeur du texte tenant compte des chiffres "1" (plus étroits)
+
+5. **Correction du graphique vide à 100%** :
+   - Gestion spéciale des arcs de 360° (cercle complet)
+   - Quand tous les tests sont réussis, affichage d'un cercle complet vert au lieu d'un arc vide
+
+6. **Export du diagramme simplifié** :
+   - L'export du diagramme circulaire ne contient plus la grille de statistiques
+   - Seulement le diagramme et la légende (comme demandé)
+   - La grille de statistiques reste disponible via l'export dédié
+
+7. **Correction de la légende dans l'export** :
+   - Hauteur dynamique de la légende selon le nombre d'items
+   - Tous les éléments de la légende sont maintenant visibles, y compris les dérogations
+
+**Traductions ajoutées** :
+- `validationDerogation: 'Dérogation'` (FR et EN)
+- `statsDerogation: 'Dérogations'` (FR et EN)
+
+**Icônes ajoutées** :
+- `createDerogationIcon` / `createWarningIcon` : Icône d'avertissement (triangle orange) pour les dérogations
+- `createWarningIconForExport` : Version SVG pour les exports
+
+**Calcul du score mis à jour** :
+- `applicableCriteria = TOTAL_CRITERIA - notApplicable - derogation`
+- Les dérogations sont exclues du calcul du score (comme les non applicables)
+
 ### 0. Refactorisation de la structure des fichiers (Session récente)
 
 **Problème identifié** : Les fichiers devenaient trop longs et difficiles à maintenir. `panel.html` contenait plus de 2600 lignes avec tout le CSS intégré, et certains fichiers de tests dépassaient 500 lignes.
@@ -91,6 +144,8 @@ Extension navigateur (Chrome/Firefox) pour réaliser le diagnostic flash d'acces
 - Style CSS `.test-item.not-applicable` avec bordure grise et opacité réduite
 - Les tests non applicables sont comptés séparément et inclus dans le diagramme circulaire
 
+> **Note** : Une 5ème option "Dérogation" a été ajoutée plus tard (voir section 14). Les dérogations sont traitées comme les non applicables pour le calcul du score mais sont affichées séparément dans les statistiques.
+
 ### 3. Score sur 100 et diagramme circulaire
 
 **Fichiers modifiés** : `utils/stats.js`, `panel.html`, `utils/i18n.js`
@@ -98,8 +153,9 @@ Extension navigateur (Chrome/Firefox) pour réaliser le diagnostic flash d'acces
 **Fonctionnalités ajoutées** :
 
 1. **Calcul du score sur 100** :
-   - Algorithme : `Score = (nb_validés / (15 - nb_non_applicables)) * 100`
+   - Algorithme : `Score = (nb_validés / (15 - nb_non_applicables - nb_dérogations)) * 100`
    - Constante `TOTAL_CRITERIA = 15` (nombre total de critères RGAA)
+   - Les dérogations sont exclues du dénominateur (comme les non applicables)
    - Affichage avec couleur dynamique selon le score :
      - ≥ 90 : Vert (#4caf50) - Excellent
      - ≥ 75 : Vert clair (#8bc34a) - Bon
@@ -107,8 +163,8 @@ Extension navigateur (Chrome/Firefox) pour réaliser le diagnostic flash d'acces
      - < 50 : Rouge (#f44336) - Faible
 
 2. **Diagramme circulaire (pie chart)** :
-   - Visualisation SVG des 3 catégories : Réussis, Échoués, Non Applicable
-   - Couleurs : Vert (#4caf50), Rouge (#f44336), Gris (#9e9e9e)
+   - Visualisation SVG des 4 catégories : Réussis, Échoués, Non Applicable, Dérogations
+   - Couleurs : Vert (#4caf50), Rouge (#f44336), Gris (#9e9e9e), Orange (#ff9800)
    - Légende dynamique affichant uniquement les catégories avec des tests
    - Mise à jour automatique à chaque changement de statut
    - Gestion du cas vide (cercle gris avec message)
@@ -771,15 +827,15 @@ La logique d'analyse des contrastes a été divisée en 5 modules pour améliore
 ### 7. Points techniques importants
 
 #### Système de validation
-- 4 options disponibles : "Réussi", "Échoué", "Non-testé", "Non applicable"
+- 5 options disponibles : "Réussi", "Échoué", "Non-testé", "Non applicable", "Dérogation"
 - Radio buttons avec `name="test-{testId}-validation"`
 - Lorsque "Non-testé" est sélectionné, le test est retiré de `categories.X.tests[]` pour ne pas être compté
-- Lorsque "Réussi", "Échoué" ou "Non applicable" est sélectionné, le test est ajouté/mis à jour dans `categories.X.tests[]`
+- Lorsque "Réussi", "Échoué", "Non applicable" ou "Dérogation" est sélectionné, le test est ajouté/mis à jour dans `categories.X.tests[]`
 
 #### Statistiques
-- Compteurs globaux : Total, Réussis, Échoués, Non applicables
-- Score sur 100 : Calculé avec l'algorithme `(nb_validés / (15 - nb_non_applicables)) * 100`
-- Diagramme circulaire : Visualisation SVG des proportions (Réussis, Échoués, Non Applicable)
+- Compteurs globaux : Total, Réussis, Échoués, Non applicables, Dérogations
+- Score sur 100 : Calculé avec l'algorithme `(nb_validés / (15 - nb_non_applicables - nb_dérogations)) * 100`
+- Diagramme circulaire : Visualisation SVG des proportions (Réussis, Échoués, Non Applicable, Dérogations)
 - Compteurs par catégorie : Affichage `(validé / total)` à côté du titre de chaque catégorie
 - Mis à jour automatiquement via `updateStats()` après chaque changement
 - Calculé depuis `categories.navigation.tests`, `categories.langage.tests`, `categories.structuration.tests`
@@ -934,6 +990,7 @@ webext-dagnostic-flash-rgaa/
 - ✅ Auto-refresh des contrastes sur changement du DOM (MutationObserver)
 - ✅ Affichage automatique du titre et H1 de la page
 - ✅ Option "Non applicable" pour tous les tests (4 options de validation)
+- ✅ Option "Dérogation" pour tous les tests (5 options de validation au total)
 - ✅ Score sur 100 avec calcul automatique
 - ✅ Diagramme circulaire pour visualiser la répartition des résultats
 - ✅ Compteurs de progression par catégorie
@@ -944,8 +1001,9 @@ webext-dagnostic-flash-rgaa/
 - ✅ Analyse des champs de formulaire avec visualisation des labels et inputs
 - ✅ Analyse des alternatives textuelles avec bulles d'information
 - ✅ Migration vers pnpm dans les workflows GitHub
-- ✅ Export du diagramme circulaire en PNG (téléchargement transparent)
-- ✅ Export de la grille de statistiques en PNG (2x2 avec pictogrammes)
+- ✅ Export du diagramme circulaire en PNG (téléchargement transparent, diagramme + légende uniquement)
+- ✅ Export de la grille de statistiques en PNG (3x2 avec score "X/100", icônes et dérogations)
+- ✅ Option "Dérogation" pour tous les critères (affichage séparé dans les statistiques)
 - ✅ Système d'icônes SVG Heroicons (remplacement complet des emojis)
 - ✅ Alignement parfait des icônes dans les titres de catégories
 - ✅ Boutons d'export améliorés (taille et lisibilité)
@@ -1100,7 +1158,7 @@ const categories = {
 **Comptage** :
 - Les tests "Non applicables" sont comptés séparément
 - Ils sont inclus dans le total validé pour le calcul du score
-- Ils sont exclus du dénominateur du score (15 - nb_non_applicables)
+- Ils sont exclus du dénominateur du score (15 - nb_non_applicables - nb_dérogations)
 
 ### Format d'affichage des compteurs de catégorie
 
