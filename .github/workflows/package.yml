@@ -48,6 +48,12 @@ jobs:
             manifest.version = '$TAG_VERSION';
             fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
             fs.writeFileSync('manifest.json', JSON.stringify(manifest, null, 2) + '\n');
+            // Mettre à jour manifest-firefox.json si il existe
+            if (fs.existsSync('manifest-firefox.json')) {
+              const manifestFirefox = JSON.parse(fs.readFileSync('manifest-firefox.json', 'utf8'));
+              manifestFirefox.version = '$TAG_VERSION';
+              fs.writeFileSync('manifest-firefox.json', JSON.stringify(manifestFirefox, null, 2) + '\n');
+            }
           "
 
       - name: Read version from manifest.json

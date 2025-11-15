@@ -13,7 +13,9 @@
     "version": "node scripts/sync-version.js",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "version-all": "changeset version && node scripts/sync-version.js"
+    "version-all": "changeset version && node scripts/sync-version.js",
+    "switch:firefox": "node scripts/switch-to-firefox.js",
+    "switch:chrome": "node scripts/switch-to-chrome.js"
   },
   "keywords": [
     "extension",
