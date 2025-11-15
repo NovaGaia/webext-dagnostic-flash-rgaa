@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Diagnostic Flash RGAA",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "Extension pour réaliser les diagnostics flash d'accessibilité",
   "permissions": [
     "activeTab",
@@ -10,7 +10,9 @@
     "<all_urls>"
   ],
   "background": {
-    "scripts": ["background.js"]
+    "scripts": [
+      "background.js"
+    ]
   },
   "devtools_page": "devtools.html",
   "browser_action": {

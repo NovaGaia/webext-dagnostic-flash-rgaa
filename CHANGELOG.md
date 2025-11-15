@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.4
+
+### Patch Changes
+
+- 20efd90: add derogation and a enable firefox manifest
+- 0661189: informations about the Diagnosic flash
+- 7f3d599: Refactorization
+- 2399af8: refacto continue
+
 ## 1.0.3
 
 ### Patch Changes
